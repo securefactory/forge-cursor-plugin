@@ -72,13 +72,13 @@ The recommended workflow for starting a development session:
 
 If the Forge MCP server is not configured:
 
-1. Visit your Forge instance settings page (e.g., `https://<your-tenant>.agent.opsera.dev/settings`)
-2. Click **Connect IDE** → **Open in Cursor**
+1. Visit [https://app.softwareforge.ai](https://app.softwareforge.ai) and open your project
+2. Go to **Connect IDE** → **Open in Cursor**
 3. This auto-generates a token and configures the MCP connection
 
 Or set environment variables manually:
-- `FORGE_MCP_URL` — Your Forge MCP endpoint (e.g., `https://refactory.agent.opsera.dev/api/mcp`)
-- `FORGE_TOKEN` — Your personal `forge_...` API token
+- `FORGE_MCP_URL` — `https://app.softwareforge.ai/api/mcp`
+- `FORGE_TOKEN` — Your personal `forge_...` API token (from **Settings** → **API Tokens**)
 
 ## Execution Guidelines
 

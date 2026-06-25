@@ -12,12 +12,11 @@ Set up your connection to Opsera Forge.
 1. **Check if MCP is configured**: Try calling `list_my_projects`. If it works, you're already connected.
 
 2. **If not connected**, guide the user:
-   - Ask for their Forge instance URL (e.g., `refactory.agent.opsera.dev` or `elevence.agent.opsera.dev`)
-   - Direct them to `https://<tenant>.agent.opsera.dev/settings`
-   - Tell them to click **Connect IDE** → **Open in Cursor** to auto-configure the MCP connection
-   - Alternatively, they can set environment variables:
-     - `FORGE_MCP_URL=https://<tenant>.agent.opsera.dev/api/mcp`
-     - `FORGE_TOKEN=forge_...` (generated from API Tokens page)
+   - Direct them to [https://app.softwareforge.ai](https://app.softwareforge.ai)
+   - Open their project → **Connect IDE** → **Open in Cursor** to auto-configure MCP
+   - For manual setup, use **Settings** → **API Tokens** and set:
+     - `FORGE_MCP_URL=https://app.softwareforge.ai/api/mcp`
+     - `FORGE_TOKEN=forge_...`
 
 3. **Configure hooks**: Call `configure_repo` with `{ "ide": "cursor", "hooks_already_present": true }` because the Forge marketplace plugin already provides guard hooks. This unlocks work order MCP tools for the session.
 

@@ -27,8 +27,8 @@ The plugin declares an MCP server named **`forge`** in `mcp.json` using environm
 
 **Preferred — Forge UI deeplink**
 
-1. Log into your Forge instance (e.g. `https://<tenant>.agent.opsera.dev`)
-2. Go to **Settings** → **Connect IDE**
+1. Log into Forge at [https://app.softwareforge.ai](https://app.softwareforge.ai)
+2. Open your project → **Connect IDE**
 3. Click **Open in Cursor** — installs global `forge` MCP with your token
 
 **Alternative — manual `~/.cursor/mcp.json`**
@@ -38,7 +38,7 @@ Server name must be **`forge`** so tools resolve as `mcp__forge__*`.
 **Alternative — environment variables**
 
 ```bash
-export FORGE_MCP_URL="https://<tenant>.agent.opsera.dev/api/mcp"
+export FORGE_MCP_URL="https://app.softwareforge.ai/api/mcp"
 export FORGE_TOKEN="forge_..."
 open -a Cursor   # launch from terminal so env vars are inherited
 ```

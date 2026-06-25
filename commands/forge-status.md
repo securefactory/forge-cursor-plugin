@@ -24,7 +24,7 @@ Verify that Forge is connected and ready for work order operations.
 4. **Plugin hooks**: Remind the user to check **Settings** → **Hooks** for Forge guard hooks (pre-commit, pre-push, dangerous ops, secrets, session complete).
 
 5. **Environment variables** (optional fallback when deeplink is not used):
-   - `FORGE_MCP_URL=https://<tenant>.agent.opsera.dev/api/mcp`
+   - `FORGE_MCP_URL=https://app.softwareforge.ai/api/mcp`
    - `FORGE_TOKEN=forge_...`
    - Launch Cursor from a terminal if using env vars so they are inherited.
 

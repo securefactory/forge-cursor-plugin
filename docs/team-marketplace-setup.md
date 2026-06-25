@@ -33,8 +33,8 @@ The plugin ships hooks, skills, commands, and an env-based `mcp.json` — **not*
 
 Each developer must connect once:
 
-1. Log into their Forge instance
-2. **Settings** → **Connect IDE** → **Open in Cursor**
+1. Log into [Forge](https://app.softwareforge.ai)
+2. Open your project → **Connect IDE** → **Open in Cursor**
 
 Or distribute manual `~/.cursor/mcp.json` instructions (server name must be `forge`).
 
@@ -73,7 +73,7 @@ Team Marketplace refreshes from the tracked Git branch when **Auto Refresh** is 
 | Plugin not showing | Verify import completed; refresh Cursor |
 | MCP tools fail | Run `/forge-status` or `/forge-connect`; use Forge UI deeplink |
 | Hooks not firing | Check **Settings** → **Hooks** |
-| Wrong Forge tenant | Re-run deeplink from correct Forge instance |
+| Wrong Forge instance | Re-run deeplink from [app.softwareforge.ai](https://app.softwareforge.ai) |
 | Token expired | Generate new token in Forge **Settings** → **API Tokens** |
 
 ## Using with Opsera DevSecOps
