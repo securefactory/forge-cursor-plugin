@@ -1,0 +1,15 @@
+---
+description: Forge workflow conventions — ensures work order alignment, commit discipline, and proper project context usage
+alwaysApply: true
+---
+
+forge-conventions:
+
+- Call `configure_repo` with `ide: cursor` and `hooks_already_present: true` once per session before work order tools (marketplace plugin provides baseline hooks).
+- Always set the active project with `set_project` before performing any work order or activity operations.
+- Only commit to and create PRs against repositories that are linked to the current project.
+- Use `prepare_commit` before committing to validate that changes align with the assigned work order scope.
+- Link all pull requests to work orders using `create_pull_request` for automatic progress tracking.
+- Reference the work order ID or title in commit messages for traceability.
+- Sync developer activity periodically to keep Forge's tracking accurate.
+- Do not make changes outside the scope of the active work order without explicit user approval.

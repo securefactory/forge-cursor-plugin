@@ -1,0 +1,35 @@
+{
+  "name": "forge",
+  "displayName": "Opsera Forge",
+  "version": "1.0.0",
+  "description": "Opsera Forge — Work order management, developer activity tracking, and project context for AI-assisted development workflows.",
+  "author": {
+    "name": "Opsera",
+    "email": "support@opsera.io",
+    "url": "https://opsera.io"
+  },
+  "homepage": "https://opsera.io",
+  "repository": "https://github.com/opsera-agents/forge-cursor",
+  "license": "Apache-2.0",
+  "keywords": [
+    "forge",
+    "work-orders",
+    "developer-workflow",
+    "project-context",
+    "dev-activity",
+    "opsera",
+    "automation"
+  ],
+  "logo": "assets/logo.svg",
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "rules": "./rules/",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "mcp.json",
+  "commands": [
+    "commands/forge-connect.md",
+    "commands/forge-status.md",
+    "commands/work.md",
+    "commands/start-work.md"
+  ]
+}

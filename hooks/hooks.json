@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "./hooks/pre-commit-validate.sh",
+        "matcher": "git\\s+commit",
+        "failClosed": true
+      },
+      {
+        "command": "./hooks/pre-push-preflight.sh",
+        "matcher": "git\\s+push"
+      },
+      {
+        "command": "./hooks/block-dangerous-ops.sh",
+        "matcher": "git\\s+push\\s+.*--force|rm\\s+-rf\\s+/|kubectl\\s+.*apply.*prod",
+        "failClosed": true
+      }
+    ],
+    "beforeReadFile": [
+      {
+        "command": "./hooks/redact-secrets.sh",
+        "failClosed": false
+      }
+    ],
+    "stop": [
+      {
+        "command": "./hooks/session-complete.sh"
+      }
+    ]
+  }
+}

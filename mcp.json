@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "forge": {
+      "type": "streamable-http",
+      "url": "${env:FORGE_MCP_URL}",
+      "headers": {
+        "Authorization": "Bearer ${env:FORGE_TOKEN}"
+      }
+    }
+  }
+}
