@@ -27,15 +27,24 @@ Activate this skill when the user:
 
 ## Workflow
 
-1. Set the project context first with `set_project`.
-2. Use `sync_dev_activity` to pull the latest commits and PRs.
-3. If inconsistencies are suspected, run `validate_dev_activity_sync`.
-4. If validation reveals gaps, use `replay_dev_activity` to recover missed events.
+1. Call `configure_repo` and `set_project` before dev-activity tools.
+2. Use `sync_dev_activity` to pull latest commits/PRs from linked repos and replay projected events (optional: `repo_name`, `mode`, `from_timestamp`, `dry_run`).
+3. If inconsistencies are suspected, run `validate_dev_activity_sync` (optional: `repo_name`, `since`, `forge_only`).
+4. For gap recovery without a full sync, use `replay_dev_activity` directly (`mode`: `missing_only`, `from_timestamp`, or `full_project`).
 
 ## Parameters
 
-- `repo_name` — Optional scope to a specific `owner/repo`
-- `since` — ISO timestamp lower bound for sync
+**`sync_dev_activity`**
+- `repo_name` — Optional `owner/repo` scope
+- `mode` — `missing_only`, `from_timestamp`, or `full_project` (replay phase)
+- `from_timestamp` — ISO lower bound when `mode=from_timestamp`
 - `forge_only` — Only treat forge-verified events as valid (default: true)
-- `mode` — For replay: `missing_only`, `from_timestamp`, or `full_project`
 - `dry_run` — Preview replay changes without writing data
+
+**`validate_dev_activity_sync`**
+- `repo_name` — Optional `owner/repo` scope
+- `since` — ISO timestamp lower bound
+- `forge_only` — Apply forge-only validity policy (default: true)
+
+**`replay_dev_activity`**
+- `repo_name`, `mode`, `from_timestamp`, `forge_only`, `include_unverified`, `dry_run`, `max_rows`

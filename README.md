@@ -23,19 +23,46 @@ Update the `repository` URL in `.cursor-plugin/plugin.json` if it changes — cu
 
 ## Connect MCP (required)
 
-The plugin declares an MCP server named **`forge`** in `mcp.json` using environment variables. Each developer must connect once:
+The plugin declares an MCP server named **`forge`** in `mcp.json` using environment variables. Each developer must connect once.
 
-**Preferred — Forge UI deeplink**
+### Preferred — one-click install from Forge UI
 
-1. Log into Forge at [https://app.softwareforge.ai](https://app.softwareforge.ai)
-2. Open your project → **Connect IDE**
-3. Click **Open in Cursor** — installs global `forge` MCP with your token
+Forge generates a personal `forge_...` token and opens Cursor with the MCP server pre-configured via a deeplink.
 
-**Alternative — manual `~/.cursor/mcp.json`**
+1. Log into [Forge](https://app.softwareforge.ai)
+2. Use either entry point:
+   - **Projects** page → scroll to **Connect IDE** → **Install in IDE** → choose **Cursor**
+   - Open a project → **Connect IDE** tab → **Install in IDE** → choose **Cursor**
+3. Forge calls `POST /ide/setup-prompt`, creates an API token, and opens:
+   ```
+   cursor://anysphere.cursor-deeplink/mcp/install?name=forge&config=<base64>
+   ```
+4. Cursor adds a global MCP server named **`forge`** at `https://app.softwareforge.ai/api/mcp` with your token.
+5. Confirm under **Settings → Tools & MCP** that `forge` is connected (green).
+
+On the project **Connect IDE** tab you can also create a token manually, then click **Install in Cursor** under **One-Click Install**.
+
+### Alternative — manual `~/.cursor/mcp.json`
 
 Server name must be **`forge`** so tools resolve as `mcp__forge__*`.
 
-**Alternative — environment variables**
+```json
+{
+  "mcpServers": {
+    "forge": {
+      "type": "streamable-http",
+      "url": "https://app.softwareforge.ai/api/mcp",
+      "headers": {
+        "Authorization": "Bearer forge_..."
+      }
+    }
+  }
+}
+```
+
+Create a token under **Connect IDE** → **Create an API Token**.
+
+### Alternative — environment variables
 
 ```bash
 export FORGE_MCP_URL="https://app.softwareforge.ai/api/mcp"
@@ -43,7 +70,7 @@ export FORGE_TOKEN="forge_..."
 open -a Cursor   # launch from terminal so env vars are inherited
 ```
 
-Run **`/forge-connect`** or **`/forge-status`** in Cursor for guided setup and health checks.
+Run **`/forge-connect`** for step-by-step one-click MCP install guidance (the command stops and waits until you confirm `forge` is connected). Use **`/forge-status`** to diagnose connection issues.
 
 ## First session
 
@@ -59,10 +86,10 @@ This registers the session with Forge and unlocks work order tools.
 
 | Command | Description |
 |---------|-------------|
-| `/forge-connect` | Connect to Forge, configure hooks, and select your project |
-| `/forge-status` | Verify MCP connection, hooks, and session readiness |
-| `/work` | Show current work order or pick the next one |
-| `/start-work` | Full workflow: pick task → implement → commit → PR → complete |
+| `/forge-connect` | **Start here** — guides Forge one-click MCP install, verifies Tools & MCP, configures session, selects project |
+| `/forge-status` | **Validate MCP** — calls Forge tools, prints a readiness status report; shows install steps if not connected |
+| `/work` | Show current work order or pick the next one (redirects to `/forge-connect` if MCP not connected) |
+| `/start-work` | Full workflow: pick task → implement → commit → PR → complete (requires MCP first) |
 
 ## Guard Hooks
 

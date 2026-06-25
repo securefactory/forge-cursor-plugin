@@ -27,11 +27,11 @@ Activate this skill when the user:
 | `get_next_work_order` | Pick highest-priority unstarted task |
 | `update_work_order` | Update fields (status, estimate, notes) |
 | `transition_work_order` | Move through workflow stages |
-| `complete_work_order` | Mark done (with optional PR link) |
+| `complete_work_order` | Mark done (requires synced merged PR, or `user_confirmed_complete_without_merged_pr: true`) |
 | `get_workflow_stages` | Available stages for the project |
 | `get_work_order_stats` | Summary statistics |
-| `prepare_commit` | Generate formatted `[WO-...]` commit message for the work order |
-| `create_pull_request` | Create PR linked to work order |
+| `prepare_commit` | Generate `[WO-...]` commit message (requires `work_order_id`) |
+| `create_pull_request` | Generate PR title/body, record activity, return CLI command — does not open the PR on the host for you |
 | `ask_question` | Ask clarifying question about a work order |
 | `get_clarifications` | Get pending clarifications |
 | `comment_on_work_order` | Add a comment |
@@ -40,8 +40,11 @@ Activate this skill when the user:
 
 ## Workflow
 
+0. Call `configure_repo` once per session before any work order tool:
+   - **Marketplace plugin installed**: `{ "ide": "cursor", "hooks_already_present": true }`
+   - **No plugin**: `{ "ide": "cursor" }` — write returned hook files to the workspace
 1. Ensure a project is set (`set_project`) before querying work orders.
 2. Use `get_next_work_order` to pick a task, or `list_work_orders` to browse.
-3. Before committing, call `prepare_commit` to get the commit message; plugin hooks enforce the pre-commit checklist.
-4. After pushing, call `create_pull_request` to link the PR back to the work order.
-5. When done, call `complete_work_order` to close the task (requires synced merged PR unless user explicitly overrides).
+3. Before committing, call `prepare_commit` with `work_order_id` (and optional `summary`) to get the `[WO-...]` message; plugin hooks enforce the pre-commit checklist.
+4. After pushing, call `create_pull_request` with `work_order_id`, `branch_name`, `changes_summary`, and repo details — it generates the PR title/body, records activity, and returns a provider CLI command (e.g. `gh pr create`); run that command or create the PR manually, then pass `pr_url` / `pr_number` if already created.
+5. Sync activity with `sync_dev_activity`, then call `complete_work_order` — requires a synced merged PR unless the user explicitly confirms `user_confirmed_complete_without_merged_pr: true`.

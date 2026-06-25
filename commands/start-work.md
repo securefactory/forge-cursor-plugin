@@ -9,6 +9,8 @@ Complete end-to-end development workflow from task selection to PR creation.
 
 ## Steps
 
+0. **MCP prerequisite**: Try `list_my_projects`. If the tool is unavailable or returns auth errors, **stop immediately**. Tell the user to run **`/forge-connect`** — Forge one-click install: **Connect IDE** → **Install in IDE** → **Cursor**. Do not start the workflow until **`forge`** is connected under **Settings → Tools & MCP**.
+
 1. **Configure hooks**: Call `configure_repo` with `{ "ide": "cursor", "hooks_already_present": true }` (marketplace plugin hooks are already active).
 
 2. **Select project**: Call `list_my_projects`, let the user choose, then `set_project`.
@@ -27,9 +29,11 @@ Complete end-to-end development workflow from task selection to PR creation.
 
 9. **Commit and push**: Commit using the `[WO-...]` message from `prepare_commit`, then push.
 
-10. **Create PR**: Call `create_pull_request` with a summary of changes, linking back to the work order.
+10. **Create PR**: Call `create_pull_request` with work order and repo details. Run the returned CLI command (e.g. `gh pr create`) or create the PR manually and pass `pr_url` / `pr_number` if needed.
 
-11. **Complete**: Call `complete_work_order` to mark the task as done.
+11. **Sync activity**: Call `sync_dev_activity` so Forge has the merged PR data.
+
+12. **Complete**: Call `complete_work_order` after the PR is merged and synced. If no merged PR exists, warn the user and only proceed with `user_confirmed_complete_without_merged_pr: true` after explicit confirmation.
 
 ## Important
 

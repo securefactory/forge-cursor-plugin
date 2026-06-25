@@ -9,6 +9,8 @@ Show the current work order or pick the next available task.
 
 ## Steps
 
+0. **MCP prerequisite**: Try `list_my_projects`. If the tool is unavailable or returns auth errors, **stop immediately**. Tell the user to run **`/forge-connect`** — or use Forge → **Connect IDE** → **Install in IDE** → **Cursor** at [app.softwareforge.ai](https://app.softwareforge.ai), then confirm **`forge`** is green under **Settings → Tools & MCP**. Do not proceed until MCP works.
+
 1. Call `configure_repo` with `{ "ide": "cursor", "hooks_already_present": true }` if not already done this session (required before work order tools work).
 
 2. Ensure a project is set. If not, call `list_my_projects` and ask the user to choose one, then call `set_project`.

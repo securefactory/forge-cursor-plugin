@@ -31,12 +31,13 @@ How enterprise customers deploy the Forge Cursor plugin to their development tea
 
 The plugin ships hooks, skills, commands, and an env-based `mcp.json` — **not** tenant credentials.
 
-Each developer must connect once:
+Each developer must connect once via Forge one-click install:
 
 1. Log into [Forge](https://app.softwareforge.ai)
-2. Open your project → **Connect IDE** → **Open in Cursor**
-
-Or distribute manual `~/.cursor/mcp.json` instructions (server name must be `forge`).
+2. **Connect IDE** → **Install in IDE** → **Cursor**
+   - Available on the **Projects** page or inside a project under the **Connect IDE** tab
+3. Forge creates a `forge_...` token and opens the Cursor MCP deeplink
+4. Verify **Settings → Tools & MCP** shows `forge` connected
 
 Developers can run **`/forge-status`** to verify the connection.
 

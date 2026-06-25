@@ -23,8 +23,8 @@ Manage development tasks through their full lifecycle:
 - `complete_work_order` — Mark a work order as done (requires synced merged PR unless user confirms override)
 - `get_workflow_stages` — List available workflow stages for the project
 - `get_work_order_stats` — Summary statistics for work orders
-- `prepare_commit` — Generate formatted commit message for the active work order
-- `create_pull_request` — Create a PR linked to the work order
+- `prepare_commit` — Generate `[WO-...]` commit message (requires `work_order_id`; call after acceptance criteria are satisfied)
+- `create_pull_request` — Generate PR title/body, record activity, return provider CLI command — run the command to open the PR on the host
 - `ask_question` — Ask a clarifying question about a work order
 - `get_clarifications` — Get pending clarifications
 - `comment_on_work_order` — Add a comment to a work order
@@ -65,20 +65,21 @@ The recommended workflow for starting a development session:
 6. **Implement** — Write code, run tests
 7. **Prepare commit** — `prepare_commit` to generate the `[WO-...]` commit message; hooks enforce the checklist
 8. **Commit and push** — Use the `[WO-...]` message from `prepare_commit`; plugin hooks enforce the pre-commit checklist
-9. **Create PR** — `create_pull_request` linked to the work order
-10. **Complete** — `complete_work_order` after PR is merged and synced (or with explicit user override)
+9. **Create PR** — `create_pull_request` generates title/body and a CLI command; run it (or create manually), then record `pr_url` / `pr_number` if needed
+10. **Sync & complete** — `sync_dev_activity`, then `complete_work_order` after merged PR is synced (or with explicit user override)
 
 ## Setup
 
 If the Forge MCP server is not configured:
 
-1. Visit [https://app.softwareforge.ai](https://app.softwareforge.ai) and open your project
-2. Go to **Connect IDE** → **Open in Cursor**
-3. This auto-generates a token and configures the MCP connection
+1. Go to [https://app.softwareforge.ai](https://app.softwareforge.ai)
+2. **Connect IDE** → **Install in IDE** → **Cursor** (Projects page or project **Connect IDE** tab)
+3. Forge creates a token and opens Cursor with the MCP deeplink (`cursor://anysphere.cursor-deeplink/mcp/install?name=forge&...`)
+4. Verify **Settings → Tools & MCP** shows `forge` connected
 
 Or set environment variables manually:
 - `FORGE_MCP_URL` — `https://app.softwareforge.ai/api/mcp`
-- `FORGE_TOKEN` — Your personal `forge_...` API token (from **Settings** → **API Tokens**)
+- `FORGE_TOKEN` — Your personal `forge_...` API token (from **Connect IDE** → **Create an API Token`)
 
 ## Execution Guidelines
 
