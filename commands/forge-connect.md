@@ -30,9 +30,10 @@ Do **not** call Forge tools until MCP is connected. Print this to the user:
 **Forge MCP is not connected yet.** Connect it once using Forge one-click install:
 
 1. Open [https://app.softwareforge.ai](https://app.softwareforge.ai) and sign in.
-2. Go to **Connect IDE** using either:
-   - **Projects** page → scroll to **Connect IDE**
-   - Open a project → **Connect IDE** tab
+2. Go to **Connect IDE** using any of:
+   - **Application Context** → **Connect IDE** tab
+   - **Project Settings** → **Connect IDE**
+   - **User Settings** (avatar menu) → **API Tokens**
 3. Click **Install in IDE** → choose **Cursor**.
    - Forge creates a `forge_...` API token and opens Cursor automatically.
    - Accept the MCP install prompt in Cursor.

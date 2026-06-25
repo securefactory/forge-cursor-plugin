@@ -1,8 +1,6 @@
-# Opsera Forge — Cursor Plugin
+# Forge — Cursor Plugin
 
-Work order management, developer activity tracking, and project context for AI-assisted development workflows.
-
-Standalone Cursor plugin repository. Opsera DevSecOps is a separate product: [opsera-agents/opsera-cursor](https://github.com/opsera-agents/opsera-cursor).
+Work order management, developer activity tracking, and project context for AI-assisted development workflows in [Forge](https://app.softwareforge.ai).
 
 ## Features
 
@@ -11,15 +9,15 @@ Standalone Cursor plugin repository. Opsera DevSecOps is a separate product: [op
 | **Work Orders** | Manage tasks through their full lifecycle — pick, implement, commit, PR, complete |
 | **Dev Activity** | Sync commits and PRs from linked repos, validate consistency, replay gaps |
 | **Project Context** | Set active project, list repos, search artifacts, access requirements |
-| **Pre-commit Guard** | Validates commit scope against the active work order before allowing commits |
+| **Pre-commit Guard** | Enforces Forge pre-commit checklist for `[WO-]` / `[TASK-]` commits (tests, acceptance criteria, activity report) |
 | **Dangerous Ops Guard** | Blocks force-pushes, destructive commands, and unreviewed prod deployments |
 | **Session Tracking** | Reminds to sync activity when agent session ends |
 
 ## Install
 
-Install from the [Cursor Marketplace](https://cursor.com/marketplace) or import this repository in **Team Marketplace** (see [docs/team-marketplace-setup.md](docs/team-marketplace-setup.md)).
+Import this repository in Cursor **Team Marketplace** (see [docs/team-marketplace-setup.md](docs/team-marketplace-setup.md)).
 
-Update the `repository` URL in `.cursor-plugin/plugin.json` if it changes — currently [securefactory/forge-cursor-plugin](https://github.com/securefactory/forge-cursor-plugin).
+Repository: [securefactory/forge-cursor-plugin](https://github.com/securefactory/forge-cursor-plugin)
 
 ## Connect MCP (required)
 
@@ -27,16 +25,19 @@ The plugin declares an MCP server named **`forge`** in `mcp.json` using environm
 
 ### Preferred — one-click install from Forge UI
 
-Forge generates a personal `forge_...` token and opens Cursor with the MCP server pre-configured via a deeplink.
+Forge generates a personal `forge_...` token and opens Cursor with the MCP server pre-configured.
 
 1. Log into [Forge](https://app.softwareforge.ai)
-2. Use either entry point:
-   - **Projects** page → scroll to **Connect IDE** → **Install in IDE** → choose **Cursor**
-   - Open a project → **Connect IDE** tab → **Install in IDE** → choose **Cursor**
+2. Use any of these entry points:
+   - **Application Context** → open a project → **Connect IDE** tab → **Install in IDE** → **Cursor**
+   - **Project Settings** → **Connect IDE** section → **Install in IDE** → **Cursor**
+   - **User Settings** (avatar menu) → **API Tokens** → **Install in IDE** → **Cursor**
 3. Accept the MCP install prompt in Cursor when it opens.
 4. Confirm under **Settings → Tools & MCP** that **`forge`** is connected (green).
 
-On the project **Connect IDE** tab you can also create a token manually, then click **Install in Cursor** under **One-Click Install**.
+On the **Connect IDE** tab you can also **Create an API Token**, then click **Install in Cursor** under **One-Click Install**.
+
+**Note:** **Open in IDE** on a work order card launches that task in your editor — it is not the MCP install flow.
 
 ### Alternative — manual `~/.cursor/mcp.json`
 
@@ -56,7 +57,7 @@ Server name must be **`forge`** so tools resolve as `mcp__forge__*`.
 }
 ```
 
-Create a token under **Connect IDE** → **Create an API Token**.
+Create a token under **Connect IDE** → **Create an API Token**, or in **User Settings** → **API Tokens**.
 
 ### Alternative — environment variables
 
@@ -91,7 +92,7 @@ This registers the session with Forge and unlocks work order tools.
 
 | Hook | Event | Behavior |
 |------|-------|----------|
-| Pre-commit | `git commit` | Validates commit aligns with active work order |
+| Pre-commit | `git commit` | Blocks `[WO-]` / `[TASK-]` commits until Forge pre-commit checklist is complete |
 | Pre-push | `git push` | Advisory reminder to sync activity and link PRs |
 | Block dangerous ops | `git push --force`, `rm -rf /`, prod deploys | Blocks with explanation |
 | Redact secrets | File reads | Warns when reading files that may contain secrets |
@@ -115,7 +116,7 @@ forge-cursor-plugin/               → repo root (single-plugin layout)
 ## Local Development
 
 1. Clone and open this repo in Cursor
-2. Connect MCP: Forge UI deeplink **or** add `forge` to `~/.cursor/mcp.json`
+2. Connect MCP via Forge **Install in IDE → Cursor** or add `forge` to `~/.cursor/mcp.json`
 3. Run `node scripts/validate-plugin.mjs`
 4. Optional: copy repo to `~/.cursor/plugins/local/forge` and **Developer: Reload Window**
 5. Run `/forge-status` then `/forge-connect`

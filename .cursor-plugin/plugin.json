@@ -1,14 +1,14 @@
 {
   "name": "forge",
-  "displayName": "Opsera Forge",
+  "displayName": "Forge",
   "version": "1.0.0",
-  "description": "Opsera Forge — Work order management, developer activity tracking, and project context for AI-assisted development workflows.",
+  "description": "Forge — Work order management, developer activity tracking, and project context for AI-assisted development workflows.",
   "author": {
-    "name": "Opsera",
-    "email": "support@opsera.io",
-    "url": "https://opsera.io"
+    "name": "Forge",
+    "email": "hi@softwareforge.ai",
+    "url": "https://app.softwareforge.ai"
   },
-  "homepage": "https://opsera.io",
+  "homepage": "https://app.softwareforge.ai",
   "repository": "https://github.com/securefactory/forge-cursor-plugin",
   "license": "Apache-2.0",
   "keywords": [
@@ -17,7 +17,7 @@
     "developer-workflow",
     "project-context",
     "dev-activity",
-    "opsera",
+    "softwareforge",
     "automation"
   ],
   "logo": "assets/logo.svg",

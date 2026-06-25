@@ -53,8 +53,9 @@ Print this and stop further validation:
 
 **Forge MCP is not connected.**
 
-1. [https://app.softwareforge.ai](https://app.softwareforge.ai) → **Connect IDE**
-2. **Install in IDE** → **Cursor**
+1. [https://app.softwareforge.ai](https://app.softwareforge.ai) → **Install in IDE** → **Cursor**
+   - Application Context → **Connect IDE**, **Project Settings** → **Connect IDE**, or **User Settings** → **API Tokens**
+2. Accept the MCP install prompt in Cursor
 3. Confirm **Settings → Tools & MCP** → **`forge`** is green
 4. Run **`/forge-status`** again
 

@@ -9,7 +9,7 @@ Complete end-to-end development workflow from task selection to PR creation.
 
 ## Steps
 
-0. **MCP prerequisite**: Try `list_my_projects`. If the tool is unavailable or returns auth errors, **stop immediately**. Tell the user to run **`/forge-connect`** — Forge one-click install: **Connect IDE** → **Install in IDE** → **Cursor**. Do not start the workflow until **`forge`** is connected under **Settings → Tools & MCP**.
+0. **MCP prerequisite**: Try `list_my_projects`. If the tool is unavailable or returns auth errors, **stop immediately**. Tell the user to run **`/forge-connect`** — Forge **Install in IDE → Cursor** (Application Context, Project Settings, or User Settings → API Tokens). Do not start the workflow until **`forge`** is connected under **Settings → Tools & MCP**.
 
 1. **Configure hooks**: Call `configure_repo` with `{ "ide": "cursor", "hooks_already_present": true }` (marketplace plugin hooks are already active).
 

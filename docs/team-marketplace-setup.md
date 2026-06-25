@@ -34,9 +34,11 @@ The plugin ships hooks, skills, commands, and an env-based `mcp.json` — **not*
 Each developer must connect once via Forge one-click install:
 
 1. Log into [Forge](https://app.softwareforge.ai)
-2. **Connect IDE** → **Install in IDE** → **Cursor**
-   - Available on the **Projects** page or inside a project under the **Connect IDE** tab
-3. Forge creates a `forge_...` token and opens the Cursor MCP deeplink
+2. **Install in IDE** → **Cursor** from any of:
+   - Application Context → **Connect IDE** tab
+   - **Project Settings** → **Connect IDE**
+   - **User Settings** → **API Tokens**
+3. Accept the MCP install prompt in Cursor
 4. Verify **Settings → Tools & MCP** shows `forge` connected
 
 Developers can run **`/forge-status`** to verify the connection.
@@ -72,11 +74,7 @@ Team Marketplace refreshes from the tracked Git branch when **Auto Refresh** is 
 | Issue | Solution |
 |-------|----------|
 | Plugin not showing | Verify import completed; refresh Cursor |
-| MCP tools fail | Run `/forge-status` or `/forge-connect`; use Forge UI deeplink |
+| MCP tools fail | Run `/forge-status` or `/forge-connect`; re-run **Install in IDE → Cursor** in Forge |
 | Hooks not firing | Check **Settings** → **Hooks** |
-| Wrong Forge instance | Re-run deeplink from [app.softwareforge.ai](https://app.softwareforge.ai) |
-| Token expired | Generate new token in Forge **Settings** → **API Tokens** |
-
-## Using with Opsera DevSecOps
-
-DevSecOps is a separate Cursor plugin in [opsera-agents/opsera-cursor](https://github.com/opsera-agents/opsera-cursor). Import both repositories separately if your team uses both products.
+| Wrong Forge instance | Re-install MCP from [app.softwareforge.ai](https://app.softwareforge.ai) |
+| Token expired | Create a new token under **Connect IDE** or **User Settings** → **API Tokens**, then re-install |
