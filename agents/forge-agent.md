@@ -73,7 +73,7 @@ The recommended workflow for starting a development session:
 If the Forge MCP server is not configured:
 
 1. Go to [https://app.softwareforge.ai](https://app.softwareforge.ai)
-2. **Connect IDE** → **Install in IDE** → **Cursor** (Projects page or project **Connect IDE** tab)
+2. **Install in IDE** → **Cursor** from Application Context **Connect IDE**, **Project Settings** → **Connect IDE**, or **User Settings** → **API Tokens**
 3. Forge creates a token and opens Cursor — accept the MCP install prompt.
 4. Verify **Settings → Tools & MCP** shows `forge` connected
 
