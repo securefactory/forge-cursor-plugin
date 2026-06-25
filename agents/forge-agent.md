@@ -79,7 +79,7 @@ If the Forge MCP server is not configured:
 
 Or set environment variables manually:
 - `FORGE_MCP_URL` — `https://app.softwareforge.ai/api/mcp`
-- `FORGE_TOKEN` — Your personal `forge_...` API token (from **Connect IDE** → **Create an API Token`)
+- `FORGE_TOKEN` — Your personal `forge_...` API token (from **Connect IDE** or **User Settings** → **API Tokens**)
 
 ## Execution Guidelines
 
