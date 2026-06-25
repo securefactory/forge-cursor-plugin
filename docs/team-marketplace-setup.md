@@ -6,7 +6,7 @@ How enterprise customers deploy the Forge Cursor plugin to their development tea
 
 - Cursor **Teams** ($20/user/mo) or **Enterprise** plan
 - Admin access to Cursor team settings
-- GitHub access to your organization's **forge-cursor** repository (public or private fork)
+- GitHub access to [securefactory/forge-cursor-plugin](https://github.com/securefactory/forge-cursor-plugin) (public or private fork)
 
 ## Setup steps
 
@@ -14,7 +14,7 @@ How enterprise customers deploy the Forge Cursor plugin to their development tea
 
 1. Open Cursor → **Dashboard** → **Settings** → **Plugins**
 2. Under **Team Marketplaces**, click **Add Marketplace** → **Import from Repo**
-3. Enter your repository URL, for example: `https://github.com/<your-org>/forge-cursor`
+3. Enter: `https://github.com/securefactory/forge-cursor-plugin`
 4. The `forge` plugin is detected automatically
 
 ### 2. Configure plugin availability

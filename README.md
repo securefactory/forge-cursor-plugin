@@ -19,7 +19,7 @@ Standalone Cursor plugin repository. Opsera DevSecOps is a separate product: [op
 
 Install from the [Cursor Marketplace](https://cursor.com/marketplace) or import this repository in **Team Marketplace** (see [docs/team-marketplace-setup.md](docs/team-marketplace-setup.md)).
 
-Update the `repository` URL in `.cursor-plugin/plugin.json` to match your published GitHub org before marketplace submission.
+Update the `repository` URL in `.cursor-plugin/plugin.json` if it changes — currently [securefactory/forge-cursor-plugin](https://github.com/securefactory/forge-cursor-plugin).
 
 ## Connect MCP (required)
 
@@ -77,7 +77,7 @@ This registers the session with Forge and unlocks work order tools.
 ## Repository structure
 
 ```
-forge-cursor/                      → repo root (single-plugin layout)
+forge-cursor-plugin/               → repo root (single-plugin layout)
 ├── .cursor-plugin/plugin.json     → Plugin manifest
 ├── mcp.json                       → Forge MCP config (env-var based, no secrets)
 ├── agents/forge-agent.md          → Forge subagent

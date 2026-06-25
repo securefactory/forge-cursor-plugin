@@ -9,7 +9,7 @@
     "url": "https://opsera.io"
   },
   "homepage": "https://opsera.io",
-  "repository": "https://github.com/opsera-agents/forge-cursor",
+  "repository": "https://github.com/securefactory/forge-cursor-plugin",
   "license": "Apache-2.0",
   "keywords": [
     "forge",
