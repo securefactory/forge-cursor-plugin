@@ -59,7 +59,7 @@ Print this and stop further validation:
 3. Confirm **Settings → Tools & MCP** → **`forge`** is green
 4. Run **`/forge-status`** again
 
-Server name must be **`forge`** (not `forge-refactory`). Re-install from Forge if unsure.
+Server name must be **`forge`**. Re-install from Forge if you used a different name.
 
 ---
 

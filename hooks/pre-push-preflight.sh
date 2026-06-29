@@ -1,6 +1,6 @@
 #!/bin/bash
 # Forge Pre-Push Preflight Hook
-# Warns if shipping pipeline is not ready before pushing.
+# Advisory reminder to sync dev activity and link PRs after push.
 # Non-blocking — provides advisory warning only.
 
 input=$(cat)

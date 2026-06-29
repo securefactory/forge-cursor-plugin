@@ -26,7 +26,8 @@ steps:
   - tool: mcp__forge__sync_dev_activity
     args:
       repo_name: "${REPO_FULL_NAME}"
-      since: "${PR_CREATED_AT}"
+      mode: from_timestamp
+      from_timestamp: "${PR_CREATED_AT}"
 
   - tool: mcp__forge__validate_dev_activity_sync
     args:

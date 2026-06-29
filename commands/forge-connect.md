@@ -1,6 +1,6 @@
 ---
 name: forge-connect
-description: Install and connect the Forge MCP server (one-click deeplink), verify auth, configure session, and select your project.
+description: Install and connect the Forge MCP server (one-click install), verify auth, configure session, and select your project.
 ---
 
 # Forge Connect
