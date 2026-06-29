@@ -15,14 +15,31 @@ Show the current work order or pick the next available task.
 
 2. Ensure a project is set. If not, call `list_my_projects` and ask the user to choose one, then call `set_project`.
 
-3. Call `get_next_work_order` to pick the highest-priority unstarted task.
+3. **Pick or browse:**
+   - Default: call `get_next_work_order` for the highest-priority backlog task (auto-transitions).
+   - Browse: call `get_workflow_stages`, then `list_work_orders` with `status` / `priority` filters, then `get_work_order` with `work_order_id` (UUID).
 
-4. Display the work order with:
+4. Optionally call `get_work_order_stats` for a project summary.
+
+5. Display the work order with:
    - Title and description
    - Priority and status
    - Acceptance criteria (if any)
+   - RTM traceability (from `get_work_order` response when available)
    - Linked repositories
 
-5. Ask the user if they want to start working on this task. If yes, call `transition_work_order` to move it to "In Progress".
+6. Offer context loading: `get_artifact` (`intent`, `prd`, `architecture`, `rtm`) or `get_work_order_comments` if the user wants discussion history.
 
-6. Call `list_linked_repos` and remind the user to ensure all repos are cloned locally.
+7. Ask the user if they want to start working. If yes and the task is not already in progress:
+   - If you used `get_next_work_order`, it may already be transitioned.
+   - Otherwise call `get_workflow_stages`, then `transition_work_order` with the valid next `status`.
+
+8. Call `list_linked_repos` and remind the user to ensure all repos are cloned locally.
+
+9. Suggest **`/start-work`** for the full implement → commit → PR workflow.
+
+## Clarifications and comments
+
+- WO comments: `get_work_order_comments` with `wo_id` (e.g. `WO-001`)
+- Post comment: `comment_on_work_order` with `wo_id`, `content`, optional `trigger_ai: false`
+- Team Q&A: `ask_question` or `get_clarifications`

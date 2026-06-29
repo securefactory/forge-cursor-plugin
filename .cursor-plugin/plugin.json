@@ -36,6 +36,10 @@
   "commands": [
     "commands/forge-connect.md",
     "commands/forge-status.md",
+    "commands/forge-context.md",
+    "commands/forge-artifacts.md",
+    "commands/forge-orders.md",
+    "commands/forge-sync.md",
     "commands/work.md",
     "commands/start-work.md"
   ]

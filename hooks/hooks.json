@@ -25,7 +25,8 @@
     ],
     "stop": [
       {
-        "command": "${CURSOR_PLUGIN_ROOT}/hooks/session-complete.sh"
+        "command": "${CURSOR_PLUGIN_ROOT}/hooks/session-complete.sh",
+        "loop_limit": 1
       }
     ]
   }

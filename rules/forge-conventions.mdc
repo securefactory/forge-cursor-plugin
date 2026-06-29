@@ -7,9 +7,13 @@ forge-conventions:
 
 - Call `configure_repo` with `ide: cursor` and `hooks_already_present: true` once per session before work order tools (marketplace plugin provides baseline hooks).
 - Always set the active project with `set_project` before performing any work order or activity operations.
-- Only commit to and create PRs against repositories that are linked to the current project.
+- Load project artifacts with `get_artifact` (`intent`, `prd`, `architecture`, `rtm`) or `search_artifacts` before implementing scoped work.
+- Only commit to and create PRs against repositories that are linked to the current project (`list_linked_repos`).
+- Call `get_workflow_stages` before manual `transition_work_order` or filtering `list_work_orders` by status.
 - Use `prepare_commit` before committing to validate that changes align with the assigned work order scope.
+- Run an RTM drift check before Forge-tagged commits; include results in `update_work_order` field `rtm_drift_summary`.
+- Call `update_work_order` with full dev-activity fields after each meaningful commit — not only at completion.
 - Link all pull requests to work orders using `create_pull_request` for automatic progress tracking.
-- Reference the work order ID or title in commit messages for traceability.
-- Sync developer activity periodically to keep Forge's tracking accurate.
+- Sync developer activity with `sync_dev_activity` after push/PR and before `complete_work_order`.
+- Use `get_work_order_comments` and `comment_on_work_order` (param `wo_id`) for WO discussion; use `ask_question` and `get_clarifications` for team clarifications.
 - Do not make changes outside the scope of the active work order without explicit user approval.

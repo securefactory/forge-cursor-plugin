@@ -184,6 +184,63 @@ function resolveHookCommandPath(command) {
   return stripped.length > 0 ? stripped : null;
 }
 
+const FORGE_MCP_TOOLS = [
+  "set_project",
+  "list_my_projects",
+  "list_linked_repos",
+  "link_repo",
+  "get_project_state",
+  "configure_repo",
+  "get_artifact",
+  "list_ux_references",
+  "search_artifacts",
+  "list_work_orders",
+  "get_work_order",
+  "get_next_work_order",
+  "update_work_order",
+  "transition_work_order",
+  "complete_work_order",
+  "get_workflow_stages",
+  "get_work_order_stats",
+  "prepare_commit",
+  "create_pull_request",
+  "ask_question",
+  "get_clarifications",
+  "comment_on_work_order",
+  "reply_to_work_order_comment",
+  "get_work_order_comments",
+  "sync_dev_activity",
+  "validate_dev_activity_sync",
+  "replay_dev_activity",
+];
+
+async function validateMcpToolDocumentation(pluginName) {
+  const docPaths = [
+    path.join(pluginDir, "agents", "forge-agent.md"),
+    ...["work-orders", "dev-activity", "project-context"].map((skill) =>
+      path.join(pluginDir, "skills", skill, "SKILL.md"),
+    ),
+  ];
+
+  const combined = [];
+  for (const docPath of docPaths) {
+    if (!(await pathExists(docPath))) {
+      addError(`${pluginName}: MCP tool docs file missing: ${path.relative(repoRoot, docPath)}`);
+      continue;
+    }
+    combined.push(await fs.readFile(docPath, "utf8"));
+  }
+
+  const corpus = combined.join("\n");
+  const missing = FORGE_MCP_TOOLS.filter((tool) => !corpus.includes(`\`${tool}\``));
+
+  if (missing.length > 0) {
+    addError(
+      `${pluginName}: MCP tool names missing from agent/skills docs: ${missing.join(", ")}`,
+    );
+  }
+}
+
 async function validateHookCommands(pluginRoot, pluginName) {
   const hooksPath = path.join(pluginRoot, "hooks", "hooks.json");
   const hooksConfig = await readJsonFile(hooksPath, "Hooks config");
@@ -321,6 +378,8 @@ async function main() {
   }
 
   await validateHookCommands(pluginDir, pluginName);
+
+  await validateMcpToolDocumentation(pluginName);
 
   const hooksPath = path.join(pluginDir, "hooks", "hooks.json");
   if (!(await pathExists(hooksPath))) {

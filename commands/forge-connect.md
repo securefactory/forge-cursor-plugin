@@ -9,17 +9,23 @@ Set up the live Forge MCP connection and select your active project.
 
 ## Important — plugin vs live MCP
 
-The Forge plugin declares MCP metadata in `mcp.json`. That is **not** enough to call tools.
+The Forge plugin declares MCP metadata in `mcp.json` (often shown as **`plugin-forge-forge`**). That entry uses `${env:FORGE_MCP_URL}` and `${env:FORGE_TOKEN}` and is often **errored** even when Forge works.
 
-The user must have a **live** MCP server named **`forge`** under **Settings → Tools & MCP** (green/connected). If only **Settings → Plugins → MCPs** shows Forge but tools fail, MCP is not connected yet.
+The **live** connection is usually **`user-forge`** after Forge **Install in IDE → Cursor** (one-click), or **`forge`** if added manually to `~/.cursor/mcp.json`.
+
+**Test connection by calling `list_my_projects`** — not by reading plugin MCP status or assuming server name must be `forge`.
+
+If **Settings → Plugins → MCPs** shows Forge but tools fail, MCP is not connected yet.
 
 ## Step 1 — Test connection
 
-Try calling `list_my_projects`.
+Call **`list_my_projects`** on any Forge MCP server that exposes Forge tools (try **`user-forge`** first, then **`forge`**).
 
-- **Success** → skip to Step 3.
-- **Tool not found** (`mcp__forge__*`) → MCP server missing or wrong name. Go to Step 2.
-- **401 / auth error** → token missing or expired. Go to Step 2.
+- **Success** → note which server name worked; skip to Step 3.
+- **Tool not found** on all Forge servers → go to Step 2.
+- **401 / auth error** → go to Step 2.
+
+Do **not** treat `plugin-forge-forge` errored as disconnected until `list_my_projects` fails on **user-forge** / **forge** too.
 
 ## Step 2 — Guide MCP install (stop and wait)
 
@@ -37,7 +43,9 @@ Do **not** call Forge tools until MCP is connected. Print this to the user:
 3. Click **Install in IDE** → choose **Cursor**.
    - Forge creates a `forge_...` API token and opens Cursor automatically.
    - Accept the MCP install prompt in Cursor.
-4. Confirm **Settings → Tools & MCP** shows **`forge`** connected (green).
+4. Confirm **Settings → Tools & MCP** shows a Forge server connected (green) — usually **`user-forge`** or **`forge`**.
+
+**Note:** **`plugin-forge-forge`** may stay errored; that is OK if **`user-forge`** is green and `list_my_projects` works.
 
 **Alternative (same tab):** **Create an API Token** → copy token → click **Install in Cursor** under **One-Click Install**.
 
@@ -92,4 +100,4 @@ Call `list_linked_repos` and report:
 - Active project: name + ID
 - Linked repos: list or "none — link repos in Forge"
 
-Suggest **`/work`** or **`/start-work`** as the next step.
+Suggest **`/work`**, **`/start-work`**, **`/forge-context`**, or **`/forge-orders`** as the next step.

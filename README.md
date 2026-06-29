@@ -33,7 +33,9 @@ Until listed, use Team Marketplace import or [local install](#local-development)
 node scripts/validate-plugin.mjs
 ```
 
-Then verify MCP: Forge **Install in IDE → Cursor**, confirm **`forge`** under **Settings → Tools & MCP**, run **`/forge-status`**.
+Then verify MCP: Forge **Install in IDE → Cursor**, confirm a Forge server is green under **Settings → Tools & MCP** (usually **`user-forge`** or **`forge`**), run **`/forge-status`**.
+
+**Note:** The plugin may also list **`plugin-forge-forge`** (env-var based) — it can show **errored** while **`user-forge`** from one-click install works. Status is determined by calling `list_my_projects`, not by the plugin MCP entry alone.
 
 ## Connect MCP (required)
 
@@ -49,7 +51,7 @@ Forge generates a personal `forge_...` token and opens Cursor with the MCP serve
    - **Project Settings** → **Connect IDE** section → **Install in IDE** → **Cursor**
    - **User Settings** (avatar menu) → **API Tokens** → **Install in IDE** → **Cursor**
 3. Accept the MCP install prompt in Cursor when it opens.
-4. Confirm under **Settings → Tools & MCP** that **`forge`** is connected (green).
+4. Confirm under **Settings → Tools & MCP** that a Forge server is connected (green) — typically **`user-forge`** (one-click) or **`forge`** (manual).
 
 On the **Connect IDE** tab you can also **Create an API Token**, then click **Install in Cursor** under **One-Click Install**.
 
@@ -99,10 +101,65 @@ This registers the session with Forge and unlocks work order tools.
 
 | Command | Description |
 |---------|-------------|
-| `/forge-connect` | **Start here** — guides Forge one-click MCP install, verifies Tools & MCP, configures session, selects project |
-| `/forge-status` | **Validate MCP** — calls Forge tools, prints a readiness status report; shows install steps if not connected |
-| `/work` | Show current work order or pick the next one (redirects to `/forge-connect` if MCP not connected) |
-| `/start-work` | Full workflow: pick task → implement → commit → PR → complete (requires MCP first) |
+| `/forge-connect` | **Start here** — MCP install, verify connection, configure session, select project |
+| `/forge-status` | **Validate MCP** — readiness report; install steps if disconnected |
+| `/forge-context` | Load journey state, linked repos, and key artifacts (intent, PRD, architecture, RTM) |
+| `/forge-artifacts` | Fetch one artifact by type or `search_artifacts` by keyword |
+| `/forge-orders` | Browse work orders — stats, filters, details, comments, clarifications |
+| `/forge-sync` | Sync commits/PRs to Forge (`sync_dev_activity`); validate or replay if needed |
+| `/work` | Pick or show the next work order |
+| `/start-work` | Full workflow: context → implement → commit → PR → complete |
+
+## MCP tools reference
+
+All tools live on the **`forge`** MCP server (`mcp__forge__*`). Skills document workflows and parameters in detail.
+
+### Project context (9)
+
+| Tool | Purpose |
+|------|---------|
+| `set_project` | Set active project for the session |
+| `list_my_projects` | List accessible projects |
+| `list_linked_repos` | Repos linked to the project |
+| `link_repo` | Link a repository (`git_url` or `repo_full_name` + `connector_id`) |
+| `get_project_state` | Journey step, ref code, metadata |
+| `configure_repo` | Session hooks gate (required before work order tools) |
+| `get_artifact` | Latest artifact: `intent`, `prd`, `brd`, `architecture`, `work_orders`, `rtm` |
+| `list_ux_references` | UX images with download URLs |
+| `search_artifacts` | Full-text search across artifacts |
+
+### Work orders (15)
+
+| Tool | Purpose |
+|------|---------|
+| `list_work_orders` | List tasks (filter by `status`, `priority`) |
+| `get_work_order` | Full details by UUID |
+| `get_next_work_order` | Pick next backlog task (auto-transitions) |
+| `update_work_order` | Post-commit dev activity report |
+| `transition_work_order` | Manual stage transition |
+| `complete_work_order` | Mark done (requires synced merged PR) |
+| `get_workflow_stages` | Stage definitions and transitions |
+| `get_work_order_stats` | Status distribution |
+| `prepare_commit` | Generate `[WO-...]` commit message |
+| `create_pull_request` | Generate PR title/body + CLI command |
+| `ask_question` | Post clarification (Forge UI) |
+| `get_clarifications` | List clarification Q&A |
+| `comment_on_work_order` | WO comment thread (`wo_id`, e.g. `WO-001`) |
+| `reply_to_work_order_comment` | Reply to WO comment |
+| `get_work_order_comments` | List WO comments |
+
+### Developer activity (3)
+
+| Tool | Purpose |
+|------|---------|
+| `sync_dev_activity` | Sync commits/PRs from linked repos |
+| `validate_dev_activity_sync` | Verify activity consistency |
+| `replay_dev_activity` | Replay missed events |
+
+### MCP resources (read-only)
+
+- `forge://docs/introduction`, `forge://docs/tools`
+- `forge://project/{projectId}/intent|prd|brd|architecture`
 
 ## Guard Hooks
 
@@ -112,7 +169,7 @@ This registers the session with Forge and unlocks work order tools.
 | Pre-push | `git push` | Advisory reminder to sync activity and link PRs |
 | Block dangerous ops | `git push --force`, `rm -rf /`, prod deploys | Blocks with explanation |
 | Redact secrets | File reads | Warns when reading files that may contain secrets |
-| Session complete | Agent stops | Reminds to sync activity |
+| Session complete | Agent stops | One-time reminder to `sync_dev_activity` (no infinite loop) |
 
 ## Repository structure
 
@@ -122,7 +179,7 @@ forge-cursor-plugin/               → repo root (single-plugin layout)
 ├── mcp.json                       → Forge MCP config (env-var based, no secrets)
 ├── agents/forge-agent.md          → Forge subagent
 ├── skills/                        → work-orders, dev-activity, project-context
-├── commands/                      → forge-connect, forge-status, work, start-work
+├── commands/                      → forge-connect, forge-status, forge-context, …
 ├── hooks/                         → Guard hooks
 ├── rules/forge-conventions.mdc    → Shipped workflow conventions
 ├── docs/                          → Enterprise setup, automation templates
