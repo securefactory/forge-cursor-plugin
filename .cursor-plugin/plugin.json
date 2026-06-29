@@ -1,16 +1,23 @@
 {
+  "$schema": "https://cursor.com/schemas/cursor-plugin/plugin.json",
   "name": "forge",
   "displayName": "Forge",
   "version": "1.0.0",
   "description": "Forge — Work order management, developer activity tracking, and project context for AI-assisted development workflows.",
   "author": {
     "name": "Forge",
-    "email": "hi@softwareforge.ai",
-    "url": "https://app.softwareforge.ai"
+    "email": "hi@softwareforge.ai"
   },
   "homepage": "https://app.softwareforge.ai",
   "repository": "https://github.com/securefactory/forge-cursor-plugin",
   "license": "Apache-2.0",
+  "category": "developer-tools",
+  "tags": [
+    "work-orders",
+    "mcp",
+    "dev-workflow",
+    "dev-activity"
+  ],
   "keywords": [
     "forge",
     "work-orders",

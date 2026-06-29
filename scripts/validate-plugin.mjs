@@ -173,6 +173,60 @@ async function validateFrontmatterFile(filePath, componentName, requiredKeys, pl
   }
 }
 
+function resolveHookCommandPath(command) {
+  if (typeof command !== "string") {
+    return null;
+  }
+  const stripped = command
+    .replace(/\$\{CURSOR_PLUGIN_ROOT\}/g, "")
+    .replace(/^\.\//, "")
+    .replace(/^\/+/, "");
+  return stripped.length > 0 ? stripped : null;
+}
+
+async function validateHookCommands(pluginRoot, pluginName) {
+  const hooksPath = path.join(pluginRoot, "hooks", "hooks.json");
+  const hooksConfig = await readJsonFile(hooksPath, "Hooks config");
+  if (!hooksConfig?.hooks || typeof hooksConfig.hooks !== "object") {
+    return;
+  }
+
+  for (const [eventName, entries] of Object.entries(hooksConfig.hooks)) {
+    if (!Array.isArray(entries)) {
+      continue;
+    }
+    for (const [index, entry] of entries.entries()) {
+      if (!entry?.command) {
+        continue;
+      }
+      const relativePath = resolveHookCommandPath(entry.command);
+      if (!relativePath) {
+        addError(`${pluginName}: hooks.${eventName}[${index}] command is empty or invalid.`);
+        continue;
+      }
+      const resolved = path.join(pluginRoot, relativePath);
+      if (!(await pathExists(resolved))) {
+        addError(
+          `${pluginName}: hooks.${eventName}[${index}] references missing script "${relativePath}".`
+        );
+        continue;
+      }
+      try {
+        const stat = await fs.stat(resolved);
+        if (!stat.isFile()) {
+          addError(`${pluginName}: hooks.${eventName}[${index}] is not a file: ${relativePath}`);
+          continue;
+        }
+        if ((stat.mode & 0o111) === 0 && relativePath.endsWith(".sh")) {
+          addWarning(`${pluginName}: hook script is not executable: ${relativePath}`);
+        }
+      } catch {
+        addError(`${pluginName}: hooks.${eventName}[${index}] cannot stat script: ${relativePath}`);
+      }
+    }
+  }
+}
+
 async function validateComponentFrontmatter(pluginName) {
   const rulesDir = path.join(pluginDir, "rules");
   if (await pathExists(rulesDir)) {
@@ -243,6 +297,30 @@ async function main() {
   }
 
   await validateComponentFrontmatter(pluginName);
+
+  const licensePath = path.join(pluginDir, "LICENSE");
+  if (!(await pathExists(licensePath))) {
+    addError(`${pluginName}: LICENSE file is missing at repo root.`);
+  }
+
+  if (pluginManifest.author && typeof pluginManifest.author === "object") {
+    const allowedAuthorKeys = new Set(["name", "email"]);
+    for (const key of Object.keys(pluginManifest.author)) {
+      if (!allowedAuthorKeys.has(key)) {
+        addError(`${pluginName}: author.${key} is not allowed in plugin.json (use homepage for URLs).`);
+      }
+    }
+  }
+
+  if (!pluginManifest.category) {
+    addWarning(`${pluginName}: "category" is missing in plugin.json (recommended for marketplace).`);
+  }
+
+  if (!Array.isArray(pluginManifest.tags) || pluginManifest.tags.length === 0) {
+    addWarning(`${pluginName}: "tags" array is missing or empty in plugin.json (recommended for marketplace).`);
+  }
+
+  await validateHookCommands(pluginDir, pluginName);
 
   const hooksPath = path.join(pluginDir, "hooks", "hooks.json");
   if (!(await pathExists(hooksPath))) {

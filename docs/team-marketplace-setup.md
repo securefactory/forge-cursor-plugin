@@ -78,3 +78,27 @@ Team Marketplace refreshes from the tracked Git branch when **Auto Refresh** is 
 | Hooks not firing | Check **Settings** → **Hooks** |
 | Wrong Forge instance | Re-install MCP from [app.softwareforge.ai](https://app.softwareforge.ai) |
 | Token expired | Create a new token under **Connect IDE** or **User Settings** → **API Tokens**, then re-install |
+
+## Public marketplace (optional)
+
+For listing on the public [Cursor Marketplace](https://cursor.com/marketplace) (all Cursor users):
+
+1. Ensure `node scripts/validate-plugin.mjs` passes on the repo
+2. Submit at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish)
+3. Provide repo URL: `https://github.com/securefactory/forge-cursor-plugin`
+4. Plugin ID: **`forge`**, display name: **Forge**
+5. Wait for Cursor team review
+
+Team Marketplace import works **without** public listing — use this guide for enterprise rollout first.
+
+## Local install (any Cursor plan)
+
+For individual testing without Team Marketplace:
+
+```bash
+git clone https://github.com/securefactory/forge-cursor-plugin.git
+cp -R forge-cursor-plugin ~/.cursor/plugins/local/forge
+# Developer: Reload Window
+```
+
+Then connect Forge MCP via **Install in IDE → Cursor** and run **`/forge-status`**.

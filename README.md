@@ -15,9 +15,25 @@ Work order management, developer activity tracking, and project context for AI-a
 
 ## Install
 
+### Team Marketplace (enterprise)
+
 Import this repository in Cursor **Team Marketplace** (see [docs/team-marketplace-setup.md](docs/team-marketplace-setup.md)).
 
 Repository: [securefactory/forge-cursor-plugin](https://github.com/securefactory/forge-cursor-plugin)
+
+### Public marketplace (after approval)
+
+Submit or install from the [Cursor Marketplace](https://cursor.com/marketplace) once listed. Plugin ID: **`forge`**, display name: **Forge**.
+
+Until listed, use Team Marketplace import or [local install](#local-development) below.
+
+### Pre-submit / pre-release checklist
+
+```bash
+node scripts/validate-plugin.mjs
+```
+
+Then verify MCP: Forge **Install in IDE → Cursor**, confirm **`forge`** under **Settings → Tools & MCP**, run **`/forge-status`**.
 
 ## Connect MCP (required)
 
@@ -144,4 +160,4 @@ node scripts/validate-plugin.mjs
 
 ## License
 
-Apache-2.0
+Apache-2.0 — see [LICENSE](LICENSE).
