@@ -5,7 +5,7 @@ import path from "node:path";
 import process from "node:process";
 
 const repoRoot = process.cwd();
-const pluginDir = repoRoot;
+const pluginDir = path.join(repoRoot, "forge");
 const errors = [];
 const warnings = [];
 
@@ -330,6 +330,29 @@ async function validateComponentFrontmatter(pluginName) {
 }
 
 async function main() {
+  const marketplacePath = path.join(repoRoot, ".cursor-plugin", "marketplace.json");
+  const marketplace = await readJsonFile(marketplacePath, "Marketplace manifest");
+  if (marketplace) {
+    if (!Array.isArray(marketplace.plugins) || marketplace.plugins.length === 0) {
+      addError("marketplace.json must list at least one plugin in \"plugins\".");
+    } else {
+      for (const entry of marketplace.plugins) {
+        if (typeof entry?.source !== "string" || entry.source.includes("/") || entry.source.startsWith(".")) {
+          addError(
+            `marketplace.json plugin "${entry?.name ?? "unknown"}" has invalid source "${entry?.source}". Use a bare directory name (e.g. "forge").`
+          );
+          continue;
+        }
+        const pluginRoot = path.join(repoRoot, entry.source);
+        if (!(await pathExists(path.join(pluginRoot, ".cursor-plugin", "plugin.json")))) {
+          addError(
+            `marketplace.json source "${entry.source}" must contain .cursor-plugin/plugin.json at ${path.join(entry.source, ".cursor-plugin/plugin.json")}.`
+          );
+        }
+      }
+    }
+  }
+
   const manifestPath = path.join(pluginDir, ".cursor-plugin", "plugin.json");
   const pluginManifest = await readJsonFile(manifestPath, "Plugin manifest");
   if (!pluginManifest) {
@@ -355,7 +378,7 @@ async function main() {
 
   await validateComponentFrontmatter(pluginName);
 
-  const licensePath = path.join(pluginDir, "LICENSE");
+  const licensePath = path.join(repoRoot, "LICENSE");
   if (!(await pathExists(licensePath))) {
     addError(`${pluginName}: LICENSE file is missing at repo root.`);
   }

@@ -15,7 +15,9 @@ How enterprise customers deploy the Forge Cursor plugin to their development tea
 1. Open Cursor → **Dashboard** → **Settings** → **Plugins**
 2. Under **Team Marketplaces**, click **Add Marketplace** → **Import from Repo**
 3. Enter: `https://github.com/securefactory/forge-cursor-plugin`
-4. The `forge` plugin is detected automatically
+4. Cursor parses `.cursor-plugin/marketplace.json` and should detect **1 plugin: Forge**
+
+If the modal shows **"0 plugins"**, the repo is missing or has an invalid marketplace manifest — ensure `main` includes `.cursor-plugin/marketplace.json` with `"source": "forge"` (bare directory name, no `./` prefix) and `forge/.cursor-plugin/plugin.json`.
 
 ### 2. Configure plugin availability
 
@@ -78,6 +80,7 @@ Team Marketplace refreshes from the tracked Git branch when **Auto Refresh** is 
 
 | Issue | Solution |
 |-------|----------|
+| **"0 plugins" after import** | Repo must ship `.cursor-plugin/marketplace.json` listing `forge/` (see [Import step](#1-import-the-plugin-repository)). Delete the empty marketplace, pull latest `main`, re-import, or click **Refresh**. |
 | Plugin not showing | Verify import completed; refresh Cursor |
 | **Logo not loading (admin or IDE)** | See [Logo not loading](#logo-not-loading) below |
 | MCP tools fail | Run `/forge-status` or `/forge-connect`; re-run **Install in IDE → Cursor** in Forge |
@@ -150,7 +153,7 @@ For individual testing without Team Marketplace:
 
 ```bash
 git clone https://github.com/securefactory/forge-cursor-plugin.git
-cp -R forge-cursor-plugin ~/.cursor/plugins/local/forge
+cp -R forge-cursor-plugin/forge ~/.cursor/plugins/local/forge
 # Developer: Reload Window
 ```
 

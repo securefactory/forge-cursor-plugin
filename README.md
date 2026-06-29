@@ -168,16 +168,20 @@ All tools live on your **connected Forge MCP server** (discovered via `/forge-st
 ## Repository structure
 
 ```
-forge-cursor-plugin/               → repo root (single-plugin layout)
-├── .cursor-plugin/plugin.json     → Plugin manifest
-├── agents/forge-agent.md          → Forge subagent
-├── skills/                        → work-orders, dev-activity, project-context
-├── commands/                      → forge-connect, forge-status, forge-context, …
-├── hooks/                         → Guard hooks
-├── rules/forge-conventions.mdc    → Shipped workflow conventions
-├── assets/logo.png                → Plugin logo (PNG — use for marketplace; SVG also in assets/)
-├── docs/                          → Enterprise setup, automation templates
-└── scripts/validate-plugin.mjs    → Pre-push validation
+forge-cursor-plugin/               → repo root (team marketplace layout)
+├── .cursor-plugin/
+│   ├── marketplace.json           → Team marketplace manifest (required for import)
+│   └── (plugin lives under forge/)
+├── forge/                         → Plugin bundle
+│   ├── .cursor-plugin/plugin.json → Plugin manifest
+│   ├── agents/forge-agent.md        → Forge subagent
+│   ├── skills/                      → work-orders, dev-activity, project-context
+│   ├── commands/                    → forge-connect, forge-status, forge-context, …
+│   ├── hooks/                       → Guard hooks
+│   ├── rules/forge-conventions.mdc  → Shipped workflow conventions
+│   └── assets/avatar.png            → Plugin logo
+├── docs/                            → Enterprise setup, automation templates
+└── scripts/validate-plugin.mjs      → Pre-push validation
 ```
 
 MCP is **not** bundled — developers connect via **`~/.cursor/mcp.json`** (user/global) and/or **`.cursor/mcp.json`** (project).
@@ -187,14 +191,14 @@ MCP is **not** bundled — developers connect via **`~/.cursor/mcp.json`** (user
 1. Clone and open this repo in Cursor
 2. Connect MCP via Forge **Install in IDE → Cursor** (user `~/.cursor/mcp.json`) or add `.cursor/mcp.json` / manual config
 3. Run `node scripts/validate-plugin.mjs`
-4. Optional: copy repo to `~/.cursor/plugins/local/forge` and **Developer: Reload Window**
+4. Optional: copy the plugin bundle to `~/.cursor/plugins/local/forge` and **Developer: Reload Window**
 5. Run `/forge-status` then `/forge-connect`
 
 To test plugin hooks in isolation, copy to the local plugins folder:
 
 ```bash
 rm -rf ~/.cursor/plugins/local/forge
-cp -R . ~/.cursor/plugins/local/forge
+cp -R forge ~/.cursor/plugins/local/forge
 # Developer: Reload Window
 ```
 

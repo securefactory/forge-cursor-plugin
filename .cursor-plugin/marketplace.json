@@ -1,0 +1,18 @@
+{
+  "name": "forge-marketplace",
+  "owner": {
+    "name": "Forge",
+    "email": "hi@softwareforge.ai"
+  },
+  "metadata": {
+    "description": "Forge — Work order management, developer activity tracking, and project context for AI-assisted development workflows.",
+    "version": "1.0.4"
+  },
+  "plugins": [
+    {
+      "name": "forge",
+      "source": "forge",
+      "description": "Forge — Work order management, developer activity tracking, and project context for AI-assisted development workflows."
+    }
+  ]
+}
