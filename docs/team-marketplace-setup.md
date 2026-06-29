@@ -124,7 +124,8 @@ Cursor loads the logo from `plugin.json` → `"logo"` field. Relative paths are 
 
 | Cause | Fix |
 |-------|-----|
-| **Private GitHub repo** | `raw.githubusercontent.com` returns 401/404 without auth — the admin dashboard cannot load the image. Use an **absolute public HTTPS URL** in `plugin.json`, e.g. `"logo": "https://raw.githubusercontent.com/securefactory/forge-cursor-plugin/main/assets/logo.png"` (public upstream), or host `logo.png` on your CDN. |
+| **Private GitHub repo** | `raw.githubusercontent.com` for the **imported** repo returns 401/404 — use an **absolute public HTTPS URL** in `plugin.json` (this repo uses the public upstream logo URL). |
+| **Relative path after install** | Installed plugins may still fetch logo from GitHub, not local cache — absolute URL avoids private-repo auth failures. |
 | **SVG in admin UI** | Some Cursor surfaces (Team Marketplace admin, Customize) render PNG more reliably than SVG. This repo ships **`assets/logo.png`** (256×256). |
 | **Placeholder / generic icon** | Current logo is a minimal plugin icon, not the Forge product mark. Replace `assets/logo.png` with your brand asset and bump plugin version. |
 | **Not pushed yet** | Logo must exist on the **tracked branch** at import time. Push `assets/logo.png`, enable **Auto Refresh**, or re-import the marketplace. |

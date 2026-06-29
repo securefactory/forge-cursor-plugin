@@ -1,9 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="12" fill="#1a1a2e"/>
-  <path d="M16 20h32v4H16z" fill="#e94560"/>
-  <path d="M16 28h24v4H16z" fill="#e94560" opacity="0.8"/>
-  <path d="M16 36h28v4H16z" fill="#e94560" opacity="0.6"/>
-  <path d="M16 44h20v4H16z" fill="#e94560" opacity="0.4"/>
-  <circle cx="48" cy="44" r="8" fill="#0f3460" stroke="#e94560" stroke-width="2"/>
-  <path d="M45 44l2 2 4-4" stroke="#e94560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="64" y1="48" x2="448" y2="464" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#250e3c"/>
+      <stop offset="0.55" stop-color="#9947EB"/>
+      <stop offset="1" stop-color="#CF940C"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <path d="M128 144h224v40H128z" fill="#ffffff" opacity="0.95"/>
+  <path d="M128 224h176v40H128z" fill="#ffffff" opacity="0.85"/>
+  <path d="M128 304h208v40H128z" fill="#ffffff" opacity="0.75"/>
+  <circle cx="368" cy="344" r="56" fill="#250e3c" stroke="#ffffff" stroke-width="12"/>
+  <path d="M348 344l16 16 36-36" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
