@@ -1,15 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <defs>
-    <linearGradient id="bg" x1="64" y1="48" x2="448" y2="464" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#250e3c"/>
-      <stop offset="0.55" stop-color="#9947EB"/>
-      <stop offset="1" stop-color="#CF940C"/>
-    </linearGradient>
-  </defs>
-  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  <path d="M128 144h224v40H128z" fill="#ffffff" opacity="0.95"/>
-  <path d="M128 224h176v40H128z" fill="#ffffff" opacity="0.85"/>
-  <path d="M128 304h208v40H128z" fill="#ffffff" opacity="0.75"/>
-  <circle cx="368" cy="344" r="56" fill="#250e3c" stroke="#ffffff" stroke-width="12"/>
-  <path d="M348 344l16 16 36-36" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Official Forge mark from https://app.softwareforge.ai/favicon.svg -->
+  <rect width="512" height="512" rx="96" fill="#141820"/>
+  <svg x="96" y="96" width="320" height="320" viewBox="-1 6.5 27 27">
+    <path fill="#FFB028" d="M0,25.35l4.81-4.81,2,2,1.6-1.6-2-2,4.81-4.81,2,2,1.6-1.6-2-2,4.81-4.81,5.61,5.61-4.81,4.81-2-2-1.6,1.6,2,2-1.6,1.6,2.4,2.4,1.6-1.6,5.61,5.61-4.81,4.81-5.61-5.61,1.6-1.6-2.4-2.4-1.6,1.6-2-2-1.6,1.6,2,2-4.81,4.81L0,25.35H0"/>
+  </svg>
 </svg>
