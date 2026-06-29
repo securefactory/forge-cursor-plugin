@@ -14,7 +14,7 @@ import sys
 
 REMINDER = (
     'Session complete. If you made commits or created PRs during this session, '
-    'consider running \`mcp__forge__sync_dev_activity\` to update Forge activity tracking.'
+    'consider running `sync_dev_activity` on your connected Forge MCP server (see /forge-status) to update activity tracking.'
 )
 
 def emit_empty() -> None:

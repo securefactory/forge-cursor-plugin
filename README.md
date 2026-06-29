@@ -33,17 +33,17 @@ Until listed, use Team Marketplace import or [local install](#local-development)
 node scripts/validate-plugin.mjs
 ```
 
-Then verify MCP: Forge **Install in IDE → Cursor**, confirm a Forge server is green under **Settings → Tools & MCP** (usually **`user-forge`** or **`forge`**), run **`/forge-status`**.
+Then verify MCP: Forge **Install in IDE → Cursor**, confirm a Forge server is green under **Settings → Tools & MCP** (usually **`user-forge`**), run **`/forge-status`** in **Agent** chat.
 
-**Note:** The plugin may also list **`plugin-forge-forge`** (env-var based) — it can show **errored** while **`user-forge`** from one-click install works. Status is determined by calling `list_my_projects`, not by the plugin MCP entry alone.
+**Slash commands not showing?** Plugin must be **enabled** in Customize → Plugins, and commands only appear in **Agent** chat (`/forge-connect`, `/forge-status`, …). If the plugin page lists commands but `/` does not, the local plugin cache is likely empty (common with private repos) — see [docs/team-marketplace-setup.md](docs/team-marketplace-setup.md#slash-commands-not-loading).
 
 ## Connect MCP (required)
 
-The plugin declares an MCP server named **`forge`** in `mcp.json` using environment variables. Each developer must connect once.
+Forge MCP is **separate from this plugin**. The plugin ships workflow (hooks, skills, commands) only — each developer connects MCP once via user or project Cursor config.
 
 ### Preferred — one-click install from Forge UI
 
-Forge generates a personal `forge_...` token and opens Cursor with the MCP server pre-configured.
+Forge generates a personal `forge_...` token and writes to **`~/.cursor/mcp.json`** (user/global scope).
 
 1. Log into [Forge](https://app.softwareforge.ai)
 2. Use any of these entry points:
@@ -51,15 +51,13 @@ Forge generates a personal `forge_...` token and opens Cursor with the MCP serve
    - **Project Settings** → **Connect IDE** section → **Install in IDE** → **Cursor**
    - **User Settings** (avatar menu) → **API Tokens** → **Install in IDE** → **Cursor**
 3. Accept the MCP install prompt in Cursor when it opens.
-4. Confirm under **Settings → Tools & MCP** that a Forge server is connected (green) — typically **`user-forge`** (one-click) or **`forge`** (manual).
+4. Confirm under **Settings → Tools & MCP** that a Forge server is connected (green) — typically **`user-forge`**.
 
 On the **Connect IDE** tab you can also **Create an API Token**, then click **Install in Cursor** under **One-Click Install**.
 
 **Note:** **Open in IDE** on a work order card launches that task in your editor — it is not the MCP install flow.
 
-### Alternative — manual `~/.cursor/mcp.json`
-
-Server name must be **`forge`** so tools resolve as `mcp__forge__*`.
+### Alternative — manual user/global `~/.cursor/mcp.json`
 
 ```json
 {
@@ -77,15 +75,11 @@ Server name must be **`forge`** so tools resolve as `mcp__forge__*`.
 
 Create a token under **Connect IDE** → **Create an API Token**, or in **User Settings** → **API Tokens**.
 
-### Alternative — environment variables
+### Alternative — project `.cursor/mcp.json`
 
-```bash
-export FORGE_MCP_URL="https://app.softwareforge.ai/api/mcp"
-export FORGE_TOKEN="forge_..."
-open -a Cursor   # launch from terminal so env vars are inherited
-```
+Same JSON shape in **`.cursor/mcp.json`** at the repo root for team-scoped MCP (merged with user config). `/forge-status` and `/forge-connect` check **both** files.
 
-Run **`/forge-connect`** for step-by-step one-click MCP install guidance (the command stops and waits until you confirm `forge` is connected). Use **`/forge-status`** to diagnose connection issues.
+Run **`/forge-connect`** for step-by-step MCP install guidance. Use **`/forge-status`** to discover the active server and diagnose connection issues.
 
 ## First session
 
@@ -112,7 +106,7 @@ This registers the session with Forge and unlocks work order tools.
 
 ## MCP tools reference
 
-All tools live on the **`forge`** MCP server (`mcp__forge__*`). Skills document workflows and parameters in detail.
+All tools live on your **connected Forge MCP server** (discovered via `/forge-status` — typically **`user-forge`** or **`forge`**, tools as `mcp__<server>__<tool>`). Skills document workflows and parameters in detail.
 
 ### Project context (9)
 
@@ -176,20 +170,22 @@ All tools live on the **`forge`** MCP server (`mcp__forge__*`). Skills document 
 ```
 forge-cursor-plugin/               → repo root (single-plugin layout)
 ├── .cursor-plugin/plugin.json     → Plugin manifest
-├── mcp.json                       → Forge MCP config (env-var based, no secrets)
 ├── agents/forge-agent.md          → Forge subagent
 ├── skills/                        → work-orders, dev-activity, project-context
 ├── commands/                      → forge-connect, forge-status, forge-context, …
 ├── hooks/                         → Guard hooks
 ├── rules/forge-conventions.mdc    → Shipped workflow conventions
+├── assets/logo.png                → Plugin logo (PNG — use for marketplace; SVG also in assets/)
 ├── docs/                          → Enterprise setup, automation templates
 └── scripts/validate-plugin.mjs    → Pre-push validation
 ```
 
+MCP is **not** bundled — developers connect via **`~/.cursor/mcp.json`** (user/global) and/or **`.cursor/mcp.json`** (project).
+
 ## Local Development
 
 1. Clone and open this repo in Cursor
-2. Connect MCP via Forge **Install in IDE → Cursor** or add `forge` to `~/.cursor/mcp.json`
+2. Connect MCP via Forge **Install in IDE → Cursor** (user `~/.cursor/mcp.json`) or add `.cursor/mcp.json` / manual config
 3. Run `node scripts/validate-plugin.mjs`
 4. Optional: copy repo to `~/.cursor/plugins/local/forge` and **Developer: Reload Window**
 5. Run `/forge-status` then `/forge-connect`

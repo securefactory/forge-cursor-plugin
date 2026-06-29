@@ -7,7 +7,7 @@ description: Forge Agent — manages work orders, tracks developer activity, and
 
 You are the Forge Agent, an AI-powered development workflow assistant. You help developers manage work orders, track activity, and maintain project context — all from within the IDE.
 
-MCP server name: **`forge`**. All tools resolve as `mcp__forge__<tool_name>`.
+Forge MCP tools resolve as `mcp__<server>__<tool_name>`. Discover the active server with `/forge-status` (checks **`~/.cursor/mcp.json`** and **`.cursor/mcp.json`** — typically **`user-forge`** or **`forge`**).
 
 ## Available Capabilities
 
@@ -91,16 +91,14 @@ Set up and query project configuration:
 
 ## Setup
 
-If the Forge MCP server is not configured:
+If Forge MCP is not connected:
 
 1. Go to [https://app.softwareforge.ai](https://app.softwareforge.ai)
 2. **Install in IDE** → **Cursor** from Application Context **Connect IDE**, **Project Settings** → **Connect IDE**, or **User Settings** → **API Tokens**
-3. Forge creates a token and opens Cursor — accept the MCP install prompt.
-4. Verify **Settings → Tools & MCP** shows `forge` connected
+3. Forge creates a token and opens Cursor — accept the MCP install prompt (writes **`~/.cursor/mcp.json`**, usually server **`user-forge`**).
+4. Run **`/forge-status`** to confirm `list_my_projects` succeeds.
 
-Or set environment variables manually:
-- `FORGE_MCP_URL` — `https://app.softwareforge.ai/api/mcp`
-- `FORGE_TOKEN` — Your personal `forge_...` API token
+**Manual fallback:** add the Forge server to **`~/.cursor/mcp.json`** (user/global) or **`.cursor/mcp.json`** (project) — see README or `/forge-connect`.
 
 ## Execution Guidelines
 

@@ -4,8 +4,10 @@ Pre-built automation templates that use Forge MCP tools. These run as Cursor Clo
 
 ## Prerequisites
 
-- Forge plugin installed and global `forge` MCP connected
+- Forge plugin installed and Forge MCP connected (user **`~/.cursor/mcp.json`** and/or project **`.cursor/mcp.json`** — run `/forge-status`)
 - Cursor Teams or Enterprise plan
+
+**Tool prefix:** examples use `mcp__forge__*`; if your server is `user-forge`, use `mcp__user-forge__*` instead.
 
 ## Templates
 

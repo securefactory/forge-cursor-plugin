@@ -345,7 +345,7 @@ async function main() {
     );
   }
 
-  const manifestFields = ["logo", "rules", "skills", "agents", "commands", "hooks", "mcpServers"];
+  const manifestFields = ["logo", "rules", "skills", "agents", "commands", "hooks"];
   for (const field of manifestFields) {
     const values = extractPathValues(pluginManifest[field]);
     for (const value of values) {
@@ -384,14 +384,6 @@ async function main() {
   const hooksPath = path.join(pluginDir, "hooks", "hooks.json");
   if (!(await pathExists(hooksPath))) {
     addWarning(`${pluginName}: no hooks/hooks.json file found (only needed when using hooks).`);
-  }
-
-  const mcpManifestValues = extractPathValues(pluginManifest.mcpServers);
-  if (mcpManifestValues.length > 0) {
-    const mcpPath = path.join(pluginDir, "mcp.json");
-    if (!(await pathExists(mcpPath))) {
-      addWarning(`${pluginName}: plugin.json references mcpServers but mcp.json is missing.`);
-    }
   }
 
   summarizeAndExit();

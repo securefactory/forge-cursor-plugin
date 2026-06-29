@@ -15,7 +15,7 @@ fi
 cat <<'EOF'
 {
   "permission": "allow",
-  "agent_message": "Forge reminder: After pushing, consider running `mcp__forge__sync_dev_activity` to update your activity tracking in Forge. If this push is for a work order, ensure the PR is linked with `mcp__forge__create_pull_request`."
+  "agent_message": "Forge reminder: After pushing, consider running `sync_dev_activity` on your connected Forge MCP server (/forge-status) to update activity tracking. If this push is for a work order, ensure the PR is linked with `create_pull_request`."
 }
 EOF
 exit 0

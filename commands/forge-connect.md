@@ -5,27 +5,53 @@ description: Install and connect the Forge MCP server (one-click install), verif
 
 # Forge Connect
 
-Set up the live Forge MCP connection and select your active project.
+Set up the **live** Forge MCP connection (separate from this Cursor plugin) and select your active project.
 
-## Important — plugin vs live MCP
+This plugin ships hooks, skills, and commands only — **MCP is configured in user or project Cursor settings**, not bundled with the plugin.
 
-The Forge plugin declares MCP metadata in `mcp.json` (often shown as **`plugin-forge-forge`**). That entry uses `${env:FORGE_MCP_URL}` and `${env:FORGE_TOKEN}` and is often **errored** even when Forge works.
+## Step 0 — Discover Forge MCP servers
 
-The **live** connection is usually **`user-forge`** after Forge **Install in IDE → Cursor** (one-click), or **`forge`** if added manually to `~/.cursor/mcp.json`.
+Before any Forge tool call, find which MCP server is connected. Check **both** config scopes and merge results:
 
-**Test connection by calling `list_my_projects`** — not by reading plugin MCP status or assuming server name must be `forge`.
+| Scope | Config file |
+|-------|-------------|
+| **User / global** | `~/.cursor/mcp.json` |
+| **Project** | `.cursor/mcp.json` in the workspace root (if present) |
 
-If **Settings → Plugins → MCPs** shows Forge but tools fail, MCP is not connected yet.
+Run (or equivalent):
+
+```bash
+for f in "$HOME/.cursor/mcp.json" ".cursor/mcp.json"; do
+  [ -f "$f" ] && echo "=== $f ===" && jq -r '.mcpServers // {} | to_entries[] | "\(.key)\t\(.value.url // "")"' "$f" 2>/dev/null
+done
+```
+
+Collect server names that match **any** of:
+- name is `user-forge` or `forge`
+- name contains `forge` (case-insensitive)
+- `url` contains `softwareforge.ai` or ends with `/api/mcp`
+
+Also add any **enabled Forge MCP servers** visible in this Cursor session (e.g. under **Settings → Tools & MCP**, or MCP tool descriptors whose server name/id contains `forge`).
+
+**Try order** (dedupe, first match wins):
+1. `user-forge` — Forge **Install in IDE → Cursor** (most common)
+2. `forge` — manual `~/.cursor/mcp.json`
+3. Any other Forge servers from user config, then project config
+4. Any remaining Forge servers from the session tool list
+
+Record the server that succeeds as **`active_forge_mcp`** — use it for all Forge tools this session (`mcp__<active_forge_mcp>__<tool>`).
 
 ## Step 1 — Test connection
 
-Call **`list_my_projects`** on any Forge MCP server that exposes Forge tools (try **`user-forge`** first, then **`forge`**).
+Call **`list_my_projects`** on each candidate server in try order until one succeeds.
 
-- **Success** → note which server name worked; skip to Step 3.
-- **Tool not found** on all Forge servers → go to Step 2.
-- **401 / auth error** → go to Step 2.
+| Result | Action |
+|--------|--------|
+| Returns project list | Note **`active_forge_mcp`**; skip to Step 3 |
+| Tool not found on all candidates | Go to Step 2 |
+| 401 / auth error | Go to Step 2 |
 
-Do **not** treat `plugin-forge-forge` errored as disconnected until `list_my_projects` fails on **user-forge** / **forge** too.
+**Never** infer connection status from UI alone — the tool call is the only truth.
 
 ## Step 2 — Guide MCP install (stop and wait)
 
@@ -43,13 +69,11 @@ Do **not** call Forge tools until MCP is connected. Print this to the user:
 3. Click **Install in IDE** → choose **Cursor**.
    - Forge creates a `forge_...` API token and opens Cursor automatically.
    - Accept the MCP install prompt in Cursor.
-4. Confirm **Settings → Tools & MCP** shows a Forge server connected (green) — usually **`user-forge`** or **`forge`**.
-
-**Note:** **`plugin-forge-forge`** may stay errored; that is OK if **`user-forge`** is green and `list_my_projects` works.
+4. Confirm **Settings → Tools & MCP** shows a Forge server connected (green) — usually **`user-forge`**.
 
 **Alternative (same tab):** **Create an API Token** → copy token → click **Install in Cursor** under **One-Click Install**.
 
-**Manual fallback:** add to `~/.cursor/mcp.json` — server name must be **`forge`**:
+**Manual fallback — user/global** (`~/.cursor/mcp.json`):
 
 ```json
 {
@@ -65,9 +89,11 @@ Do **not** call Forge tools until MCP is connected. Print this to the user:
 }
 ```
 
+**Manual fallback — project-only** (`.cursor/mcp.json` in repo root): same JSON shape; use when a team pins Forge MCP per project.
+
 After installing, **reload Cursor** (Developer: Reload Window) if tools still do not appear.
 
-Reply **"done"** or run **`/forge-connect`** again when **Settings → Tools & MCP** shows `forge` connected.
+Reply **"done"** or run **`/forge-connect`** again when **Settings → Tools & MCP** shows a Forge server green.
 
 ---
 
@@ -75,7 +101,7 @@ Wait for the user to confirm before continuing.
 
 ## Step 3 — Configure session hooks
 
-Call `configure_repo` with:
+Call `configure_repo` on **`active_forge_mcp`** with:
 
 ```json
 { "ide": "cursor", "hooks_already_present": true }
@@ -87,7 +113,7 @@ Use `{ "ide": "cursor" }` without `hooks_already_present` only if the plugin is 
 
 ## Step 4 — Select project
 
-1. Call `list_my_projects` and show the list.
+1. Call `list_my_projects` on **`active_forge_mcp`** and show the list.
 2. Ask the user which project to use.
 3. Call `set_project` with the chosen project ID.
 
@@ -95,6 +121,7 @@ Use `{ "ide": "cursor" }` without `hooks_already_present` only if the plugin is 
 
 Call `list_linked_repos` and report:
 
+- MCP server: **`active_forge_mcp`**
 - MCP connected: yes
 - Session configured: yes
 - Active project: name + ID

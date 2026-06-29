@@ -9,7 +9,7 @@ description: >-
 
 # Project Context
 
-All tools are MCP tools on the **`forge`** server (`mcp__forge__*`).
+All tools are MCP tools on your **connected Forge MCP server** (discover via `/forge-status` — typically `user-forge` or `forge`; tools as `mcp__<server>__*`).
 
 ## When to Use
 
