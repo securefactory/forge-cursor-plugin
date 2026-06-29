@@ -168,20 +168,20 @@ All tools live on your **connected Forge MCP server** (discovered via `/forge-st
 ## Repository structure
 
 ```
-forge-cursor-plugin/               → repo root (team marketplace layout)
+forge-cursor-plugin/               → repo root (multi-plugin team marketplace)
 ├── .cursor-plugin/
-│   ├── marketplace.json           → Team marketplace manifest (required for import)
-│   └── (plugin lives under forge/)
-├── forge/                         → Plugin bundle
-│   ├── .cursor-plugin/plugin.json → Plugin manifest
-│   ├── agents/forge-agent.md        → Forge subagent
-│   ├── skills/                      → work-orders, dev-activity, project-context
-│   ├── commands/                    → forge-connect, forge-status, forge-context, …
-│   ├── hooks/                       → Guard hooks
-│   ├── rules/forge-conventions.mdc  → Shipped workflow conventions
-│   └── assets/avatar.png            → Plugin logo
-├── docs/                            → Enterprise setup, automation templates
-└── scripts/validate-plugin.mjs      → Pre-push validation
+│   └── marketplace.json           → Team marketplace manifest (pluginRoot: plugins)
+├── plugins/
+│   └── forge/                     → Forge plugin bundle
+│       ├── .cursor-plugin/plugin.json
+│       ├── agents/forge-agent.md
+│       ├── skills/                → work-orders, dev-activity, project-context
+│       ├── commands/              → forge-connect, forge-status, forge-context, …
+│       ├── hooks/                 → Guard hooks
+│       ├── rules/forge-conventions.mdc
+│       └── assets/avatar.png
+├── docs/                          → Enterprise setup, add-a-plugin guide
+└── scripts/validate-plugin.mjs    → Pre-push validation (all marketplace plugins)
 ```
 
 MCP is **not** bundled — developers connect via **`~/.cursor/mcp.json`** (user/global) and/or **`.cursor/mcp.json`** (project).
@@ -198,7 +198,7 @@ To test plugin hooks in isolation, copy to the local plugins folder:
 
 ```bash
 rm -rf ~/.cursor/plugins/local/forge
-cp -R forge ~/.cursor/plugins/local/forge
+cp -R plugins/forge ~/.cursor/plugins/local/forge
 # Developer: Reload Window
 ```
 

@@ -17,7 +17,7 @@ How enterprise customers deploy the Forge Cursor plugin to their development tea
 3. Enter: `https://github.com/securefactory/forge-cursor-plugin`
 4. Cursor parses `.cursor-plugin/marketplace.json` and should detect **1 plugin: Forge**
 
-If the modal shows **"0 plugins"**, the repo is missing or has an invalid marketplace manifest — ensure `main` includes `.cursor-plugin/marketplace.json` with `"source": "forge"` (bare directory name, no `./` prefix) and `forge/.cursor-plugin/plugin.json`.
+If the modal shows **"0 plugins"**, the repo is missing or has an invalid marketplace manifest — ensure `main` includes `.cursor-plugin/marketplace.json` with `"pluginRoot": "plugins"`, `"source": "forge"` (bare directory name, no `./` prefix), and `plugins/forge/.cursor-plugin/plugin.json`.
 
 ### 2. Configure plugin availability
 
@@ -80,7 +80,7 @@ Team Marketplace refreshes from the tracked Git branch when **Auto Refresh** is 
 
 | Issue | Solution |
 |-------|----------|
-| **"0 plugins" after import** | Repo must ship `.cursor-plugin/marketplace.json` listing `forge/` (see [Import step](#1-import-the-plugin-repository)). Delete the empty marketplace, pull latest `main`, re-import, or click **Refresh**. |
+| **"0 plugins" after import** | Repo must ship `.cursor-plugin/marketplace.json` with `"pluginRoot": "plugins"` listing `plugins/forge/` (see [Import step](#1-import-the-plugin-repository)). Delete the empty marketplace, pull latest `main`, re-import, or click **Refresh**. |
 | Plugin not showing | Verify import completed; refresh Cursor |
 | **Logo not loading (admin or IDE)** | See [Logo not loading](#logo-not-loading) below |
 | MCP tools fail | Run `/forge-status` or `/forge-connect`; re-run **Install in IDE → Cursor** in Forge |
@@ -112,11 +112,11 @@ If cache folders exist but are **empty** (or `forge-connect.md` is missing), the
 | **Wrong chat surface** | Slash commands work in **Agent** chat only — open Agent, type `/forge`. |
 | **Third-party plugins disabled** | **Cursor Settings** → ensure third-party plugins/skills are allowed (org policy can hide commands). |
 | **Stale empty cache** | Remove plugin → delete empty cache dirs → **Developer: Reload Window** → reinstall from team marketplace. |
-| **Immediate unblock (one user)** | `git clone` repo → `cp -R forge-cursor-plugin ~/.cursor/plugins/local/forge` → Reload Window. |
+| **Immediate unblock (one user)** | `git clone` repo → `cp -R forge-cursor-plugin/plugins/forge ~/.cursor/plugins/local/forge` → Reload Window. |
 
 **Admin checklist after pushing plugin updates:**
 
-1. Bump `"version"` in `.cursor-plugin/plugin.json` (e.g. `1.0.1`)
+1. Bump `"version"` in `plugins/forge/.cursor-plugin/plugin.json` and/or `metadata.version` in `.cursor-plugin/marketplace.json`
 2. Push to tracked branch
 3. **Dashboard → Team Marketplaces → Auto Refresh**
 4. Tell developers to **Reload Window** and type `/forge-status` in Agent chat
@@ -129,9 +129,9 @@ Cursor loads the logo from `plugin.json` → `"logo"` field. Relative paths are 
 |-------|-----|
 | **Private GitHub repo** | `raw.githubusercontent.com` for the **imported** repo returns 401/404 — use an **absolute public HTTPS URL** in `plugin.json` (this repo uses the public upstream logo URL). |
 | **Relative path after install** | Installed plugins may still fetch logo from GitHub, not local cache — absolute URL avoids private-repo auth failures. |
-| **SVG in admin UI** | Some Cursor surfaces (Team Marketplace admin, Customize) render PNG more reliably than SVG. This repo ships **`assets/logo.png`** (256×256). |
-| **Placeholder / generic icon** | Current logo is a minimal plugin icon, not the Forge product mark. Replace `assets/logo.png` with your brand asset and bump plugin version. |
-| **Not pushed yet** | Logo must exist on the **tracked branch** at import time. Push `assets/logo.png`, enable **Auto Refresh**, or re-import the marketplace. |
+| **SVG in admin UI** | Some Cursor surfaces (Team Marketplace admin, Customize) render PNG more reliably than SVG. This repo ships **`plugins/forge/assets/avatar.png`**. |
+| **Placeholder / generic icon** | Replace `plugins/forge/assets/avatar.png` with your brand asset and bump plugin version. |
+| **Not pushed yet** | Logo must exist on the **tracked branch** at import time. Push `plugins/forge/assets/avatar.png`, enable **Auto Refresh**, or re-import the marketplace. |
 
 After fixing, admins: **Dashboard → Settings → Plugins → Team Marketplaces → Auto Refresh** (or re-import). Developers: **Developer → Reload Window**.
 
@@ -153,7 +153,7 @@ For individual testing without Team Marketplace:
 
 ```bash
 git clone https://github.com/securefactory/forge-cursor-plugin.git
-cp -R forge-cursor-plugin/forge ~/.cursor/plugins/local/forge
+cp -R forge-cursor-plugin/plugins/forge ~/.cursor/plugins/local/forge
 # Developer: Reload Window
 ```
 

@@ -5,7 +5,6 @@ import path from "node:path";
 import process from "node:process";
 
 const repoRoot = process.cwd();
-const pluginDir = path.join(repoRoot, "forge");
 const errors = [];
 const warnings = [];
 
@@ -137,7 +136,14 @@ function extractPathValues(value) {
   return [];
 }
 
-async function validateReferencedPath(fieldName, pathValue, pluginName) {
+function resolvePluginDir(pluginRootPrefix, source) {
+  if (pluginRootPrefix) {
+    return path.join(repoRoot, pluginRootPrefix, source);
+  }
+  return path.join(repoRoot, source);
+}
+
+async function validateReferencedPath(fieldName, pathValue, pluginName, pluginDir) {
   if (pathValue.startsWith("http://") || pathValue.startsWith("https://")) {
     return;
   }
@@ -214,7 +220,7 @@ const FORGE_MCP_TOOLS = [
   "replay_dev_activity",
 ];
 
-async function validateMcpToolDocumentation(pluginName) {
+async function validateForgeMcpToolDocumentation(pluginName, pluginDir) {
   const docPaths = [
     path.join(pluginDir, "agents", "forge-agent.md"),
     ...["work-orders", "dev-activity", "project-context"].map((skill) =>
@@ -284,7 +290,7 @@ async function validateHookCommands(pluginRoot, pluginName) {
   }
 }
 
-async function validateComponentFrontmatter(pluginName) {
+async function validateComponentFrontmatter(pluginName, pluginDir) {
   const rulesDir = path.join(pluginDir, "rules");
   if (await pathExists(rulesDir)) {
     const files = await walkFiles(rulesDir);
@@ -329,42 +335,12 @@ async function validateComponentFrontmatter(pluginName) {
   }
 }
 
-async function main() {
-  const marketplacePath = path.join(repoRoot, ".cursor-plugin", "marketplace.json");
-  const marketplace = await readJsonFile(marketplacePath, "Marketplace manifest");
-  if (marketplace) {
-    if (!Array.isArray(marketplace.plugins) || marketplace.plugins.length === 0) {
-      addError("marketplace.json must list at least one plugin in \"plugins\".");
-    } else {
-      for (const entry of marketplace.plugins) {
-        if (typeof entry?.source !== "string" || entry.source.includes("/") || entry.source.startsWith(".")) {
-          addError(
-            `marketplace.json plugin "${entry?.name ?? "unknown"}" has invalid source "${entry?.source}". Use a bare directory name (e.g. "forge").`
-          );
-          continue;
-        }
-        const pluginRoot = path.join(repoRoot, entry.source);
-        if (!(await pathExists(path.join(pluginRoot, ".cursor-plugin", "plugin.json")))) {
-          addError(
-            `marketplace.json source "${entry.source}" must contain .cursor-plugin/plugin.json at ${path.join(entry.source, ".cursor-plugin/plugin.json")}.`
-          );
-        }
-      }
-    }
-  }
-
-  const manifestPath = path.join(pluginDir, ".cursor-plugin", "plugin.json");
-  const pluginManifest = await readJsonFile(manifestPath, "Plugin manifest");
-  if (!pluginManifest) {
-    summarizeAndExit();
-    return;
-  }
-
-  const pluginName = pluginManifest.name ?? "forge";
+async function validatePlugin(pluginDir, pluginManifest) {
+  const pluginName = pluginManifest.name ?? path.basename(pluginDir);
 
   if (typeof pluginManifest.name !== "string" || !pluginNamePattern.test(pluginManifest.name)) {
     addError(
-      '"name" in plugin.json must be lowercase and use only alphanumerics, hyphens, and periods.'
+      `${pluginName}: "name" in plugin.json must be lowercase and use only alphanumerics, hyphens, and periods.`
     );
   }
 
@@ -372,16 +348,11 @@ async function main() {
   for (const field of manifestFields) {
     const values = extractPathValues(pluginManifest[field]);
     for (const value of values) {
-      await validateReferencedPath(field, value, pluginName);
+      await validateReferencedPath(field, value, pluginName, pluginDir);
     }
   }
 
-  await validateComponentFrontmatter(pluginName);
-
-  const licensePath = path.join(repoRoot, "LICENSE");
-  if (!(await pathExists(licensePath))) {
-    addError(`${pluginName}: LICENSE file is missing at repo root.`);
-  }
+  await validateComponentFrontmatter(pluginName, pluginDir);
 
   if (pluginManifest.author && typeof pluginManifest.author === "object") {
     const allowedAuthorKeys = new Set(["name", "email"]);
@@ -402,11 +373,63 @@ async function main() {
 
   await validateHookCommands(pluginDir, pluginName);
 
-  await validateMcpToolDocumentation(pluginName);
+  if (pluginName === "forge") {
+    await validateForgeMcpToolDocumentation(pluginName, pluginDir);
+  }
 
   const hooksPath = path.join(pluginDir, "hooks", "hooks.json");
   if (!(await pathExists(hooksPath))) {
     addWarning(`${pluginName}: no hooks/hooks.json file found (only needed when using hooks).`);
+  }
+}
+
+async function main() {
+  const marketplacePath = path.join(repoRoot, ".cursor-plugin", "marketplace.json");
+  const marketplace = await readJsonFile(marketplacePath, "Marketplace manifest");
+  if (!marketplace) {
+    summarizeAndExit();
+    return;
+  }
+
+  const pluginRootPrefix = marketplace.metadata?.pluginRoot ?? "";
+
+  if (!Array.isArray(marketplace.plugins) || marketplace.plugins.length === 0) {
+    addError("marketplace.json must list at least one plugin in \"plugins\".");
+    summarizeAndExit();
+    return;
+  }
+
+  for (const entry of marketplace.plugins) {
+    if (typeof entry?.source !== "string" || entry.source.includes("/") || entry.source.startsWith(".")) {
+      addError(
+        `marketplace.json plugin "${entry?.name ?? "unknown"}" has invalid source "${entry?.source}". Use a bare directory name (e.g. "forge").`
+      );
+      continue;
+    }
+
+    const pluginDir = resolvePluginDir(pluginRootPrefix, entry.source);
+    const manifestPath = path.join(pluginDir, ".cursor-plugin", "plugin.json");
+    const relativeManifest = path.join(
+      pluginRootPrefix ? path.join(pluginRootPrefix, entry.source) : entry.source,
+      ".cursor-plugin/plugin.json",
+    );
+
+    if (!(await pathExists(manifestPath))) {
+      addError(
+        `marketplace.json source "${entry.source}" must contain .cursor-plugin/plugin.json at ${relativeManifest}.`
+      );
+      continue;
+    }
+
+    const pluginManifest = await readJsonFile(manifestPath, `Plugin manifest (${entry.source})`);
+    if (pluginManifest) {
+      await validatePlugin(pluginDir, pluginManifest);
+    }
+  }
+
+  const licensePath = path.join(repoRoot, "LICENSE");
+  if (!(await pathExists(licensePath))) {
+    addError("LICENSE file is missing at repo root.");
   }
 
   summarizeAndExit();
