@@ -190,6 +190,17 @@ function resolveHookCommandPath(command) {
   return stripped.length > 0 ? stripped : null;
 }
 
+const FORGE_COMMANDS = [
+  "forge-connect",
+  "forge-status",
+  "forge-context",
+  "forge-artifacts",
+  "forge-orders",
+  "forge-sync",
+  "work",
+  "start-work",
+];
+
 const FORGE_MCP_TOOLS = [
   "set_project",
   "list_my_projects",
@@ -335,6 +346,25 @@ async function validateComponentFrontmatter(pluginName, pluginDir) {
   }
 }
 
+async function validateUserGuideHtml() {
+  const guidePath = path.join(repoRoot, "docs", "forge-plugin-guide.html");
+  if (!(await pathExists(guidePath))) {
+    addError("docs/forge-plugin-guide.html is missing.");
+    return;
+  }
+
+  const html = await fs.readFile(guidePath, "utf8");
+  const missingCommands = FORGE_COMMANDS.filter((name) => !html.includes(`/${name}`));
+  const missingTools = FORGE_MCP_TOOLS.filter((tool) => !html.includes(`<code>${tool}</code>`) && !html.includes(`>${tool}<`));
+
+  if (missingCommands.length > 0) {
+    addError(`forge-plugin-guide.html missing slash commands: ${missingCommands.join(", ")}`);
+  }
+  if (missingTools.length > 0) {
+    addError(`forge-plugin-guide.html missing MCP tools: ${missingTools.join(", ")}`);
+  }
+}
+
 async function validatePlugin(pluginDir, pluginManifest) {
   const pluginName = pluginManifest.name ?? path.basename(pluginDir);
 
@@ -431,6 +461,8 @@ async function main() {
   if (!(await pathExists(licensePath))) {
     addError("LICENSE file is missing at repo root.");
   }
+
+  await validateUserGuideHtml();
 
   summarizeAndExit();
 }

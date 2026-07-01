@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forge Cursor Plugin — Usage &amp; Feature Guide</title>
+  <style>
+    :root {
+      --forge-orange: #FFB028;
+      --forge-dark: #141820;
+      --text: #1a1a2e;
+      --muted: #5a5a6e;
+      --border: #e2e4ea;
+      --bg: #fafbfc;
+      --code-bg: #f0f2f5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    header {
+      text-align: center;
+      padding: 2rem 0 1.5rem;
+      border-bottom: 3px solid var(--forge-orange);
+      margin-bottom: 2rem;
+    }
+    header svg { width: 64px; height: 64px; margin-bottom: 1rem; }
+    h1 { font-size: 2rem; margin: 0 0 0.5rem; color: var(--forge-dark); }
+    .subtitle { color: var(--muted); font-size: 1.1rem; margin: 0; }
+    .version { font-size: 0.875rem; color: var(--muted); margin-top: 0.75rem; }
+    nav.toc {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    nav.toc h2 { margin: 0 0 0.75rem; font-size: 1rem; color: var(--forge-dark); }
+    nav.toc ol { margin: 0; padding-left: 1.25rem; }
+    nav.toc li { margin: 0.35rem 0; }
+    nav.toc a { color: #2563eb; text-decoration: none; }
+    nav.toc a:hover { text-decoration: underline; }
+    section { margin-bottom: 3rem; page-break-inside: avoid; }
+    h2 {
+      font-size: 1.5rem;
+      color: var(--forge-dark);
+      border-left: 4px solid var(--forge-orange);
+      padding-left: 0.75rem;
+      margin: 2.5rem 0 1rem;
+      page-break-after: avoid;
+    }
+    h3 { font-size: 1.15rem; margin: 1.5rem 0 0.75rem; color: var(--forge-dark); }
+    h4 { font-size: 1rem; margin: 1.25rem 0 0.5rem; }
+    p { margin: 0.75rem 0; }
+    ul, ol { margin: 0.75rem 0; padding-left: 1.5rem; }
+    li { margin: 0.35rem 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--forge-dark); color: #fff; font-weight: 600; }
+    tr:nth-child(even) { background: #f8f9fb; }
+    code {
+      font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, monospace;
+      font-size: 0.875em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+    }
+    pre {
+      background: var(--forge-dark);
+      color: #e8eaed;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    pre code { background: none; padding: 0; color: inherit; }
+    .callout {
+      background: #fff8eb;
+      border-left: 4px solid var(--forge-orange);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .command-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.25rem 0;
+    }
+    .command-card h3 { margin-top: 0; }
+    .command-card h3 code { font-size: 1.1rem; }
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    a { color: #2563eb; }
+    @media print {
+      body { background: #fff; font-size: 11pt; }
+      .container { max-width: 100%; padding: 0; }
+      nav.toc { page-break-after: always; }
+      section { page-break-inside: avoid; }
+      h2 { page-break-after: avoid; }
+      a { color: inherit; text-decoration: none; }
+      pre { background: #f5f5f5; color: #000; border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" aria-hidden="true">
+    <rect width="512" height="512" rx="96" fill="#141820"/>
+    <svg x="96" y="96" width="320" height="320" viewBox="-1 6.5 27 27">
+      <path fill="#FFB028" d="M0,25.35l4.81-4.81,2,2,1.6-1.6-2-2,4.81-4.81,2,2,1.6-1.6-2-2,4.81-4.81,5.61,5.61-4.81,4.81-2-2-1.6,1.6,2,2-1.6,1.6,2.4,2.4,1.6-1.6,5.61,5.61-4.81,4.81-5.61-5.61,1.6-1.6-2.4-2.4-1.6,1.6-2-2-1.6,1.6,2,2-4.81,4.81L0,25.35H0"/>
+    </svg>
+  </svg>
+  <h1>Forge Cursor Plugin</h1>
+  <p class="subtitle">Full Usage &amp; Feature Documentation</p>
+  <p class="version">Plugin version 1.1.0 &middot; Documentation updated June 2026</p>
+</header>
+
+<nav class="toc" aria-label="Table of contents">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#features">Features Overview</a></li>
+    <li><a href="#capabilities">Plugin Capabilities</a></li>
+    <li><a href="#commands">Slash Commands</a></li>
+    <li><a href="#workflows">Workflows</a></li>
+    <li><a href="#hooks">Safety Hooks</a></li>
+    <li><a href="#mcp-tools">MCP Tools Reference</a></li>
+    <li><a href="#support">Support &amp; Links</a></li>
+  </ol>
+</nav>
+
+<!-- 1. INTRODUCTION -->
+<section id="introduction">
+  <h2>1. Introduction</h2>
+  <p>The <strong>Forge Cursor Plugin</strong> connects your IDE to <a href="https://app.softwareforge.ai">Forge</a> (SoftwareForge) for work-order-driven AI-assisted development. It packages skills, slash commands, guard hooks, rules, and a Forge agent so developers can pick tasks, load project context, commit with traceability, create pull requests, and sync activity — all from Cursor Agent chat.</p>
+
+  <h3>Plugin vs MCP</h3>
+  <table>
+    <thead><tr><th>Component</th><th>What it provides</th><th>How you get it</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Forge Plugin</strong></td><td>Slash commands, skills, hooks, rules, agent</td><td>Team Marketplace, public marketplace, or local install</td></tr>
+      <tr><td><strong>Forge MCP</strong></td><td>26 API tools (work orders, artifacts, dev activity)</td><td>Separate one-time setup via Forge UI or <code>~/.cursor/mcp.json</code></td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><strong>Important:</strong> The plugin does not include MCP credentials. Each developer must connect Forge MCP once. Use <code>/forge-connect</code> or <code>/forge-status</code> to verify.</div>
+
+  <h3>Prerequisites</h3>
+  <ul>
+    <li><strong>Cursor</strong> 2.6 or later (Agent chat required for slash commands)</li>
+    <li><strong>Forge account</strong> at <a href="https://app.softwareforge.ai">app.softwareforge.ai</a></li>
+    <li><strong>Forge MCP connected</strong> (green under Settings → Tools &amp; MCP, usually <code>user-forge</code>)</li>
+    <li><strong>Plugin enabled</strong> under Customize → Plugins → Forge</li>
+  </ul>
+</section>
+
+<!-- 2. GETTING STARTED -->
+<section id="getting-started">
+  <h2>2. Getting Started</h2>
+
+  <h3>Install the plugin</h3>
+  <p><strong>Team Marketplace (enterprise):</strong> Your Cursor admin imports <code>https://github.com/securefactory/forge-cursor-plugin</code> in Dashboard → Settings → Plugins → Team Marketplaces. See the <a href="https://github.com/securefactory/forge-cursor-plugin/blob/main/docs/team-marketplace-setup.md">Team Marketplace Setup Guide</a> for admin steps.</p>
+  <p><strong>Public marketplace:</strong> Search for <strong>Forge</strong> on <a href="https://cursor.com/marketplace">cursor.com/marketplace</a> once listed (plugin ID: <code>forge</code>).</p>
+  <p><strong>Local development:</strong></p>
+  <pre><code>git clone https://github.com/securefactory/forge-cursor-plugin.git
+cp -R forge-cursor-plugin/plugins/forge ~/.cursor/plugins/local/forge
+# Developer: Reload Window</code></pre>
+
+  <h3>Enable the plugin</h3>
+  <ol>
+    <li>Open <strong>Customize</strong> in the Cursor sidebar</li>
+    <li>Find <strong>Forge</strong> from your team marketplace</li>
+    <li>Toggle it <strong>on</strong> (if policy is Default Off)</li>
+    <li>Run <strong>Developer: Reload Window</strong></li>
+  </ol>
+  <p>Slash commands appear in <strong>Agent chat only</strong> — type <code>/forge</code> to see all eight commands.</p>
+
+  <h3>Connect Forge MCP</h3>
+  <p><strong>Preferred — one-click from Forge UI:</strong></p>
+  <ol>
+    <li>Log into <a href="https://app.softwareforge.ai">app.softwareforge.ai</a></li>
+    <li>Go to <strong>Install in IDE → Cursor</strong> from any of:
+      <ul>
+        <li>Application Context → <strong>Connect IDE</strong> tab</li>
+        <li><strong>Project Settings</strong> → Connect IDE</li>
+        <li><strong>User Settings</strong> → API Tokens</li>
+      </ul>
+    </li>
+    <li>Accept the MCP install prompt in Cursor</li>
+    <li>Confirm <strong>Settings → Tools &amp; MCP</strong> shows Forge connected (green)</li>
+  </ol>
+
+  <p><strong>Manual — user/global <code>~/.cursor/mcp.json</code>:</strong></p>
+  <pre><code>{
+  "mcpServers": {
+    "forge": {
+      "type": "streamable-http",
+      "url": "https://app.softwareforge.ai/api/mcp",
+      "headers": {
+        "Authorization": "Bearer forge_..."
+      }
+    }
+  }
+}</code></pre>
+  <p>Create a token under Forge <strong>Connect IDE</strong> or <strong>User Settings → API Tokens</strong>. The same JSON shape works in project <code>.cursor/mcp.json</code> for team-scoped MCP.</p>
+
+  <h3>Verify connection</h3>
+  <ol>
+    <li>Open <strong>Agent</strong> chat</li>
+    <li>Run <code>/forge-status</code></li>
+    <li>Review the readiness report: MCP server, active project, work-order access</li>
+  </ol>
+
+  <h3>First session</h3>
+  <p>After MCP is connected, the agent calls <code>configure_repo</code> once per session before work-order tools:</p>
+  <pre><code>{ "ide": "cursor", "hooks_already_present": true }</code></pre>
+  <p>Then select a project with <code>set_project</code>. The easiest path is <code>/forge-connect</code>, which handles both steps.</p>
+
+  <h3>Quick start</h3>
+  <ol>
+    <li><code>/forge-connect</code> — connect MCP and select project</li>
+    <li><code>/work</code> — pick or show your next work order</li>
+    <li><code>/start-work</code> — full implement → commit → PR → complete workflow</li>
+  </ol>
+
+  <h3>Troubleshooting</h3>
+  <table>
+    <thead><tr><th>Problem</th><th>Solution</th></tr></thead>
+    <tbody>
+      <tr><td>Slash commands not found</td><td>Enable plugin in Customize; use Agent chat; Reload Window</td></tr>
+      <tr><td>Only <code>/user-forge/start-work</code> appears</td><td>That is the Forge MCP prompt, not the plugin — install/enable the Forge plugin</td></tr>
+      <tr><td>MCP tools fail / auth errors</td><td>Re-run Install in IDE → Cursor in Forge; run <code>/forge-connect</code></td></tr>
+      <tr><td>Plugin page shows commands but <code>/</code> does not</td><td>Empty plugin cache (private repo) — see Team Marketplace Setup Guide</td></tr>
+      <tr><td>Hooks not firing</td><td>Check Settings → Hooks; confirm plugin is enabled</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 3. FEATURES -->
+<section id="features">
+  <h2>3. Features Overview</h2>
+  <p>High-level capabilities the Forge plugin brings to your Cursor workflow. Each feature maps to slash commands, skills, hooks, and/or MCP tools documented in later sections.</p>
+  <table>
+    <thead><tr><th>Feature</th><th>Purpose</th><th>How you use it</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Work Orders</strong></td><td>Track development tasks from backlog through merged PR with full traceability to requirements</td><td><code>/work</code>, <code>/start-work</code>, <code>/forge-orders</code>; work-orders skill; 15 MCP tools</td></tr>
+      <tr><td><strong>Dev Activity</strong></td><td>Keep Forge in sync with git commits and pull requests from linked repositories</td><td><code>/forge-sync</code>; dev-activity skill; pre-push hook reminder; 3 MCP tools</td></tr>
+      <tr><td><strong>Project Context</strong></td><td>Load journey artifacts, linked repos, and requirements before coding</td><td><code>/forge-context</code>, <code>/forge-artifacts</code>; project-context skill; 9 MCP tools</td></tr>
+      <tr><td><strong>Pre-commit Guard</strong></td><td>Enforce quality checklist before Forge-tagged commits land in git history</td><td>Automatic hook on <code>git commit</code> when message contains <code>[WO-]</code> or <code>[TASK-]</code></td></tr>
+      <tr><td><strong>Pre-push Reminder</strong></td><td>Remind the agent to sync activity after pushing code</td><td>Automatic hook on <code>git push</code> (non-blocking)</td></tr>
+      <tr><td><strong>Destructive Command Guard</strong></td><td>Prevent accidental force-pushes and destructive shell commands</td><td>Automatic hook on matching shell commands</td></tr>
+      <tr><td><strong>Sensitive File Warning</strong></td><td>Alert when the agent reads files that may contain credentials</td><td>Automatic hook on file reads (filename pattern only)</td></tr>
+      <tr><td><strong>Session End Reminder</strong></td><td>Ensure dev activity is synced before ending an agent session</td><td>One-time reminder when agent session completes</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 3b. CAPABILITIES -->
+<section id="capabilities">
+  <h2>4. Plugin Capabilities</h2>
+  <p>The Forge plugin bundles six types of components. Together they provide workflow guidance in the IDE; Forge MCP provides the live API to your project data.</p>
+
+  <h3>What ships with the plugin</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Purpose</th><th>Usage</th><th>Count</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Slash commands</strong></td>
+        <td>User-invoked workflows you trigger explicitly in Agent chat</td>
+        <td>Type <code>/forge</code> or a command name (e.g. <code>/start-work</code>) in <strong>Agent chat</strong></td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td><strong>Skills</strong></td>
+        <td>Specialized agent knowledge that auto-activates when your request matches a domain (projects, work orders, activity sync)</td>
+        <td>No manual invoke — the agent loads the right skill based on context; you can also reference workflows in natural language</td>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td><strong>Forge Agent</strong></td>
+        <td>Dedicated specialized agent for end-to-end work-order development (pick task → implement → commit → PR → complete)</td>
+        <td>Invoke the <strong>forge</strong> agent when you want focused task management, commit workflows, or PR creation</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td><strong>Rules</strong></td>
+        <td>Always-on conventions: session gates, linked-repo-only commits, RTM drift, commit discipline</td>
+        <td>Applied automatically to every agent session when the plugin is enabled</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td><strong>Safety hooks</strong></td>
+        <td>Local enforcement on git commit, push, file reads, and session end</td>
+        <td>Run automatically — view under <strong>Settings → Hooks</strong></td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td><strong>Forge MCP tools</strong></td>
+        <td>API access to Forge projects, work orders, artifacts, and dev activity (requires separate MCP connection)</td>
+        <td>Agent calls tools on your connected server (<code>user-forge</code> or <code>forge</code>); discover via <code>/forge-status</code></td>
+        <td>26</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Skills — purpose and usage</h3>
+  <table>
+    <thead><tr><th>Skill</th><th>Purpose</th><th>When it activates</th><th>MCP tools (count)</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>project-context</code></td>
+        <td>Set up and query project configuration, artifacts, and linked repositories</td>
+        <td>Switching projects, listing/linking repos, loading PRD/architecture/RTM, searching docs, UX references</td>
+        <td>9 — <code>set_project</code>, <code>list_my_projects</code>, <code>list_linked_repos</code>, <code>link_repo</code>, <code>get_project_state</code>, <code>configure_repo</code>, <code>get_artifact</code>, <code>list_ux_references</code>, <code>search_artifacts</code></td>
+      </tr>
+      <tr>
+        <td><code>work-orders</code></td>
+        <td>Manage work orders through their full lifecycle — browse, update, commit, PR, complete</td>
+        <td>Next task questions, backlog browsing, commits, PRs, workflow stages, comments, clarifications</td>
+        <td>15 — <code>list_work_orders</code>, <code>get_work_order</code>, <code>get_next_work_order</code>, <code>update_work_order</code>, <code>transition_work_order</code>, <code>complete_work_order</code>, <code>get_workflow_stages</code>, <code>get_work_order_stats</code>, <code>prepare_commit</code>, <code>create_pull_request</code>, <code>ask_question</code>, <code>get_clarifications</code>, <code>comment_on_work_order</code>, <code>reply_to_work_order_comment</code>, <code>get_work_order_comments</code></td>
+      </tr>
+      <tr>
+        <td><code>dev-activity</code></td>
+        <td>Sync, validate, and replay developer activity between git and Forge</td>
+        <td>After push/PR, before completing a work order, when activity data looks stale or incomplete</td>
+        <td>3 — <code>sync_dev_activity</code>, <code>validate_dev_activity_sync</code>, <code>replay_dev_activity</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Forge Agent — purpose and usage</h3>
+  <p><strong>Purpose:</strong> AI development workflow assistant that manages work orders, tracks activity, and maintains project context from within the IDE.</p>
+  <p><strong>Usage:</strong> Invoke when you need structured help with task selection, implementation scoped to a work order, formatted commits (<code>[WO-...]</code>), PR creation, or project setup. The agent follows the 12-step end-to-end lifecycle and applies forge-conventions rules automatically.</p>
+  <p><strong>Capabilities:</strong> All 26 MCP tools across work orders (15), dev activity (3), and project context (9).</p>
+
+  <h3>Rules — purpose and usage</h3>
+  <p><strong>Purpose:</strong> Enforce Forge workflow conventions so every agent session follows the same discipline — session gates, artifact loading, linked-repo commits, RTM drift checks, and activity reporting.</p>
+  <p><strong>Usage:</strong> Always active in the background. You do not invoke rules manually; they guide agent behavior automatically. Key conventions:</p>
+  <ul>
+    <li><code>configure_repo</code> once per session before work-order tools</li>
+    <li><code>set_project</code> before work-order or activity operations</li>
+    <li>Load artifacts before implementing scoped work</li>
+    <li>Only commit/PR to <code>list_linked_repos</code></li>
+    <li><code>prepare_commit</code> before committing; <code>update_work_order</code> after each meaningful commit</li>
+    <li><code>sync_dev_activity</code> after push/PR and before <code>complete_work_order</code></li>
+    <li>No scope changes outside the active work order without explicit approval</li>
+  </ul>
+</section>
+
+<!-- 4. COMMANDS -->
+<section id="commands">
+  <h2>5. Slash Commands</h2>
+  <p>All commands run in <strong>Agent chat</strong>. Type <code>/forge</code> to browse. Nearly all commands require a connected Forge MCP server — on failure they direct you to <code>/forge-connect</code>.</p>
+
+  <h3>Command picker</h3>
+  <table>
+    <thead><tr><th>If you need…</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td>MCP not connected</td><td><code>/forge-connect</code></td></tr>
+      <tr><td>Diagnose connection</td><td><code>/forge-status</code></td></tr>
+      <tr><td>Project briefing</td><td><code>/forge-context</code></td></tr>
+      <tr><td>One document or keyword search</td><td><code>/forge-artifacts</code></td></tr>
+      <tr><td>Browse backlog / stats</td><td><code>/forge-orders</code></td></tr>
+      <tr><td>Next task (lightweight)</td><td><code>/work</code></td></tr>
+      <tr><td>Full implementation workflow</td><td><code>/start-work</code></td></tr>
+      <tr><td>Sync git activity to Forge</td><td><code>/forge-sync</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="command-card" id="cmd-forge-connect">
+    <h3><code>/forge-connect</code></h3>
+    <p><strong>Purpose:</strong> Install/connect Forge MCP, verify auth, configure session, and select active project.</p>
+    <p><strong>When to use:</strong> MCP missing, auth fails, no project set, or any command hits the MCP prerequisite gate.</p>
+    <p><strong>Usage:</strong> Run once per developer machine after install, or whenever <code>/forge-status</code> reports disconnected. Does not implement code — only sets up the session.</p>
+    <p><strong>Steps:</strong></p>
+    <ol>
+      <li>Discover Forge MCP servers from user and project config</li>
+      <li>Test with <code>list_my_projects</code></li>
+      <li>If fail: guide through Forge Install in IDE → Cursor</li>
+      <li>Call <code>configure_repo</code> with <code>hooks_already_present: true</code></li>
+      <li><code>list_my_projects</code> → user picks → <code>set_project</code></li>
+      <li>Confirm via <code>list_linked_repos</code></li>
+    </ol>
+    <p><strong>MCP tools:</strong> <code>list_my_projects</code>, <code>configure_repo</code>, <code>set_project</code>, <code>list_linked_repos</code></p>
+  </div>
+
+  <div class="command-card" id="cmd-forge-status">
+    <h3><code>/forge-status</code></h3>
+    <p><strong>Purpose:</strong> Validate live Forge MCP connection and print a readiness report. Read-only — does not configure anything.</p>
+    <p><strong>When to use:</strong> First-time setup check, troubleshooting, or before relying on other Forge commands.</p>
+    <p><strong>Usage:</strong> Safe to run anytime. Use the report to see which MCP server is active, whether work-order tools respond, and which project is selected.</p>
+    <p><strong>Steps:</strong></p>
+    <ol>
+      <li>Discover Forge MCP servers from <code>~/.cursor/mcp.json</code> and <code>.cursor/mcp.json</code></li>
+      <li>Call <code>list_my_projects</code> on each candidate until one succeeds</li>
+      <li>Test work-order access via <code>get_work_order_stats</code> or <code>list_work_orders</code></li>
+      <li>Check active project; print status report</li>
+    </ol>
+    <p><strong>MCP tools:</strong> <code>list_my_projects</code>, <code>get_work_order_stats</code>, <code>list_work_orders</code>, <code>get_project_state</code></p>
+  </div>
+
+  <div class="command-card" id="cmd-forge-context">
+    <h3><code>/forge-context</code></h3>
+    <p><strong>Purpose:</strong> Load project context before implementing work — journey state, linked repos, and core artifacts.</p>
+    <p><strong>When to use:</strong> You need a briefing on intent, PRD, architecture, and RTM without picking a work order yet.</p>
+    <p><strong>Usage:</strong> Run at the start of a feature or when joining a project. Produces a concise briefing the agent uses for subsequent implementation.</p>
+    <p><strong>Steps:</strong></p>
+    <ol>
+      <li>Confirm MCP connection, then <code>configure_repo</code> → <code>set_project</code></li>
+      <li><code>get_project_state</code></li>
+      <li><code>list_linked_repos</code></li>
+      <li><code>get_artifact</code> for intent, prd, architecture, rtm</li>
+      <li>Optional <code>search_artifacts</code> for topic queries</li>
+    </ol>
+    <p><strong>MCP tools:</strong> <code>get_project_state</code>, <code>list_linked_repos</code>, <code>get_artifact</code>, <code>search_artifacts</code>, <code>list_ux_references</code></p>
+  </div>
+
+  <div class="command-card" id="cmd-forge-artifacts">
+    <h3><code>/forge-artifacts</code></h3>
+    <p><strong>Purpose:</strong> Fetch or search Forge journey artifacts by type or keyword.</p>
+    <p><strong>When to use:</strong> You want a specific document (PRD, BRD, RTM) or keyword search without the full briefing from <code>/forge-context</code>.</p>
+    <p><strong>Usage:</strong> Ask for a document type or search term; agent calls <code>get_artifact</code> or <code>search_artifacts</code> and summarizes unless you request the full document.</p>
+    <p><strong>Artifact types:</strong> <code>intent</code>, <code>prd</code>, <code>brd</code>, <code>architecture</code>, <code>work_orders</code>, <code>rtm</code></p>
+    <p><strong>MCP tools:</strong> <code>get_artifact</code>, <code>search_artifacts</code>, <code>list_ux_references</code></p>
+  </div>
+
+  <div class="command-card" id="cmd-forge-orders">
+    <h3><code>/forge-orders</code></h3>
+    <p><strong>Purpose:</strong> Browse and inspect work orders without starting full implementation.</p>
+    <p><strong>When to use:</strong> Stats, filtered lists, task details, comments, or clarifications — read-only backlog exploration.</p>
+    <p><strong>Usage:</strong> Explore the backlog, check team comments, or post clarifications without entering the implement → commit pipeline.</p>
+    <p><strong>Steps:</strong></p>
+    <ol>
+      <li><code>get_work_order_stats</code> and <code>get_workflow_stages</code></li>
+      <li><code>list_work_orders</code> with optional status/priority filters</li>
+      <li><code>get_work_order</code> for a specific task</li>
+      <li>Optional: <code>get_work_order_comments</code>, <code>comment_on_work_order</code>, <code>get_clarifications</code>, <code>ask_question</code></li>
+    </ol>
+    <p><strong>MCP tools:</strong> <code>get_work_order_stats</code>, <code>get_workflow_stages</code>, <code>list_work_orders</code>, <code>get_work_order</code>, comment and clarification tools</p>
+  </div>
+
+  <div class="command-card" id="cmd-work">
+    <h3><code>/work</code></h3>
+    <p><strong>Purpose:</strong> Show the current work order or pick the next one — quick "what should I work on?"</p>
+    <p><strong>When to use:</strong> Lighter than <code>/start-work</code> — claim or view a task without the full implement → PR pipeline.</p>
+    <p><strong>Usage:</strong> Daily standup-style check-in. Agent picks or displays the next WO and offers to hand off to <code>/start-work</code> when you are ready to code.</p>
+    <p><strong>Steps:</strong></p>
+    <ol>
+      <li><code>get_next_work_order</code> (auto-transitions) or browse via <code>list_work_orders</code></li>
+      <li><code>get_work_order</code> for details and RTM traceability</li>
+      <li>Optional artifact context; offer <code>/start-work</code> to begin implementation</li>
+    </ol>
+    <p><strong>MCP tools:</strong> <code>get_next_work_order</code>, <code>get_work_order</code>, <code>get_workflow_stages</code>, <code>list_work_orders</code>, <code>transition_work_order</code></p>
+  </div>
+
+  <div class="command-card" id="cmd-start-work">
+    <h3><code>/start-work</code></h3>
+    <p><strong>Purpose:</strong> Full end-to-end workflow from task selection to PR creation and completion.</p>
+    <p><strong>When to use:</strong> Ready to implement a work order through to merged PR and Forge status update.</p>
+    <p><strong>Usage:</strong> Primary command for feature development. Agent loads context, helps implement, enforces RTM drift check, commit discipline, PR linking, activity sync, and completion.</p>
+    <p><strong>Steps:</strong></p>
+    <ol>
+      <li><code>configure_repo</code> → <code>set_project</code></li>
+      <li><code>get_next_work_order</code> + <code>get_work_order</code></li>
+      <li>Load context: <code>get_project_state</code>, artifacts, <code>search_artifacts</code>, <code>list_ux_references</code></li>
+      <li><code>list_linked_repos</code> — clone before coding</li>
+      <li>Implement and test</li>
+      <li>RTM drift check → <code>rtm_drift_summary</code></li>
+      <li><code>prepare_commit</code> → commit with <code>[WO-...]</code> message</li>
+      <li><code>update_work_order</code> with dev-activity fields</li>
+      <li>Push → <code>create_pull_request</code> → run returned CLI</li>
+      <li><code>sync_dev_activity</code></li>
+      <li><code>complete_work_order</code> after PR merges</li>
+    </ol>
+    <p><strong>MCP tools:</strong> All project-context, work-order, and dev-activity tools (see Workflows section)</p>
+  </div>
+
+  <div class="command-card" id="cmd-forge-sync">
+    <h3><code>/forge-sync</code></h3>
+    <p><strong>Purpose:</strong> Sync commits and PRs from linked repos into Forge.</p>
+    <p><strong>When to use:</strong> After <code>git push</code> or PR creation; before <code>complete_work_order</code>; when Forge activity looks stale.</p>
+    <p><strong>Usage:</strong> Run after every push or when the pre-push hook reminds you. Validates and replays gaps if data is incomplete.</p>
+    <p><strong>Steps:</strong></p>
+    <ol>
+      <li><code>sync_dev_activity</code> (optional <code>repo_name</code>, <code>mode</code>)</li>
+      <li>If stale: <code>validate_dev_activity_sync</code></li>
+      <li>If gaps: <code>replay_dev_activity</code></li>
+    </ol>
+    <p><strong>MCP tools:</strong> <code>sync_dev_activity</code>, <code>validate_dev_activity_sync</code>, <code>replay_dev_activity</code></p>
+  </div>
+</section>
+
+<!-- 5. WORKFLOWS -->
+<section id="workflows">
+  <h2>6. Workflows</h2>
+
+  <h3>Architecture</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Skills</strong> (3)</td><td>Auto-triggered capabilities: project-context, work-orders, dev-activity</td></tr>
+      <tr><td><strong>Forge Agent</strong></td><td>Subagent for task management, commits, PRs, project setup</td></tr>
+      <tr><td><strong>Rules</strong></td><td>Always-on workflow conventions (forge-conventions)</td></tr>
+      <tr><td><strong>Hooks</strong></td><td>Local guard rails on git commit, push, file reads, session end</td></tr>
+      <tr><td><strong>Forge MCP</strong></td><td>26 tools on your connected server (<code>user-forge</code> or <code>forge</code>)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Skills</h3>
+  <table>
+    <thead><tr><th>Skill</th><th>Activates when…</th></tr></thead>
+    <tbody>
+      <tr><td><code>project-context</code></td><td>Project setup, linked repos, artifacts, UX refs, journey state, switching projects</td></tr>
+      <tr><td><code>work-orders</code></td><td>Current/next task, browse backlog, commits, PRs, comments, clarifications, stages</td></tr>
+      <tr><td><code>dev-activity</code></td><td>Sync commits/PRs, validate activity, recover missed events, before completing WOs</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Workflow conventions</h3>
+  <ul>
+    <li>Call <code>configure_repo</code> once per session before work-order tools</li>
+    <li>Call <code>set_project</code> before work-order or activity operations</li>
+    <li>Load artifacts before implementing scoped work</li>
+    <li>Only commit/PR against <code>list_linked_repos</code></li>
+    <li>Call <code>get_workflow_stages</code> before manual transitions or status filters</li>
+    <li>Use <code>prepare_commit</code> before committing</li>
+    <li>Run RTM drift check before Forge-tagged commits; include <code>rtm_drift_summary</code> in <code>update_work_order</code></li>
+    <li>Call <code>update_work_order</code> after each meaningful commit</li>
+    <li>Link PRs via <code>create_pull_request</code></li>
+    <li>Sync with <code>sync_dev_activity</code> after push/PR and before <code>complete_work_order</code></li>
+    <li>Do not change scope outside the active work order without explicit approval</li>
+  </ul>
+
+  <h3>End-to-end work order lifecycle</h3>
+  <ol>
+    <li><code>configure_repo</code> — session hooks gate</li>
+    <li><code>set_project</code> — select active project</li>
+    <li><code>get_next_work_order</code> — pick highest-priority backlog task</li>
+    <li>Load context: <code>get_work_order</code> + <code>get_artifact</code> (intent, prd, architecture, rtm)</li>
+    <li><code>list_linked_repos</code> — clone repos</li>
+    <li>Implement and test (scoped to work order)</li>
+    <li>RTM drift check → prepare <code>rtm_drift_summary</code></li>
+    <li><code>prepare_commit</code> → commit with <code>[WO-...]</code> message</li>
+    <li><code>update_work_order</code> — full dev-activity fields</li>
+    <li>Push → <code>create_pull_request</code> → run CLI command</li>
+    <li><code>sync_dev_activity</code></li>
+    <li><code>complete_work_order</code> — after PR merges and syncs</li>
+  </ol>
+
+  <h3>Comments vs clarifications</h3>
+  <table>
+    <thead><tr><th>Type</th><th>Tools</th><th>ID format</th></tr></thead>
+    <tbody>
+      <tr><td>Work order thread</td><td><code>get_work_order_comments</code>, <code>comment_on_work_order</code>, <code>reply_to_work_order_comment</code></td><td><code>wo_id</code> (e.g. <code>WO-001</code>)</td></tr>
+      <tr><td>Team Q&amp;A</td><td><code>ask_question</code>, <code>get_clarifications</code></td><td><code>work_order_id</code> (UUID) or <code>artifact_id</code></td></tr>
+      <tr><td>Most other WO tools</td><td><code>get_work_order</code>, <code>update_work_order</code>, etc.</td><td><code>work_order_id</code> (UUID)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Requirements traceability check (RTM)</h3>
+  <p>Before Forge-tagged commits, confirm your implementation still matches the requirements traceability matrix (RTM):</p>
+  <ol>
+    <li>Call <code>get_artifact</code> with type <code>rtm</code></li>
+    <li>Find RTM rows linked to the current work order (also in <code>get_work_order</code> → <code>traceability</code>)</li>
+    <li>Compare implementation against PRD and architecture</li>
+    <li>Record in <code>update_work_order</code> field <code>rtm_drift_summary</code></li>
+  </ol>
+
+  <h3>Automation templates</h3>
+  <p>For Cursor Cloud Agent automations (PR sync, merge workflows), see <a href="https://github.com/securefactory/forge-cursor-plugin/blob/main/docs/automation-templates.md">Automation Templates</a>.</p>
+</section>
+
+<!-- 6. HOOKS -->
+<section id="hooks">
+  <h2>7. Safety Hooks</h2>
+  <p>Safety hooks run automatically when the Forge plugin is enabled. View them under <strong>Settings → Hooks</strong>.</p>
+
+  <table>
+    <thead><tr><th>Hook</th><th>Event</th><th>Blocking?</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Pre-commit</strong></td>
+        <td><code>git commit</code></td>
+        <td>Yes</td>
+        <td>Applies only to commits containing <code>[WO-]</code> or <code>[TASK-]</code>. Blocks until checklist complete: (1) run/affect unit tests, (2) validate acceptance criteria via <code>get_work_order</code>, (3) report via <code>update_work_order</code>, (4) create <code>.forge-commit-ready</code> marker file, then retry. Defers to <code>.cursor/hooks/forge-pre-commit.sh</code> if present (installed by MCP <code>configure_repo</code> without plugin).</td>
+      </tr>
+      <tr>
+        <td><strong>Pre-push</strong></td>
+        <td><code>git push</code></td>
+        <td>No (advisory)</td>
+        <td>Always allows push; reminds agent to run <code>sync_dev_activity</code> and link PRs via <code>create_pull_request</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Destructive command guard</strong></td>
+        <td>Shell commands</td>
+        <td>Yes / Ask</td>
+        <td><strong>Denies:</strong> <code>git push --force</code>, <code>rm -rf /</code>. <strong>Asks for approval:</strong> <code>kubectl apply</code> to prod. All other commands allowed.</td>
+      </tr>
+      <tr>
+        <td><strong>Sensitive file warning</strong></td>
+        <td>File reads</td>
+        <td>No</td>
+        <td>Warns on filename patterns: <code>*.env</code>, <code>*credentials*</code>, <code>*secrets*</code>, <code>*.pem</code>, <code>*.key</code>, SSH key names. Does not scan file content.</td>
+      </tr>
+      <tr>
+        <td><strong>Session complete</strong></td>
+        <td>Agent stop</td>
+        <td>No</td>
+        <td>One-time reminder to <code>sync_dev_activity</code> when session completes successfully. Uses a reminder flag file so the message is not repeated.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Hook integration with MCP</h3>
+  <p>When the marketplace plugin is installed, call <code>configure_repo</code> with:</p>
+  <pre><code>{ "ide": "cursor", "hooks_already_present": true }</code></pre>
+  <p>This tells Forge that plugin hooks are active and avoids duplicate project-level hook installation.</p>
+
+  <h3>Requirements</h3>
+  <ul>
+    <li>Three hooks require <strong>Python 3</strong> for JSON parsing</li>
+    <li>All hook scripts use <strong>bash</strong></li>
+    <li>Hooks resolve paths via <code>${CURSOR_PLUGIN_ROOT}</code></li>
+  </ul>
+</section>
+
+<!-- 7. MCP TOOLS -->
+<section id="mcp-tools">
+  <h2>8. MCP Tools Reference</h2>
+  <p>Forge MCP exposes <strong>26 tools</strong> on your connected server. The agent calls these on your behalf; you can also ask in natural language (e.g. "sync my commits to Forge") and the matching skill will route to the right tool.</p>
+
+  <h3>Tool selection guide</h3>
+  <table>
+    <thead><tr><th>Your goal</th><th>Tool to use</th><th>Typical usage</th></tr></thead>
+    <tbody>
+      <tr><td>Start next task from backlog</td><td><code>get_next_work_order</code></td><td>Auto-transitions to next stage; pair with <code>get_work_order</code> for details</td></tr>
+      <tr><td>Browse or filter tasks</td><td><code>get_workflow_stages</code> → <code>list_work_orders</code></td><td>Filter by <code>status</code> or <code>priority</code></td></tr>
+      <tr><td>Manually change task stage</td><td><code>get_workflow_stages</code> → <code>transition_work_order</code></td><td>Must use valid next <code>status</code> key</td></tr>
+      <tr><td>Report progress after commit</td><td><code>update_work_order</code></td><td>Include dev-activity fields and <code>rtm_drift_summary</code> — not the same as completing</td></tr>
+      <tr><td>Mark task done</td><td><code>complete_work_order</code></td><td>After merged PR is synced; or explicit user override</td></tr>
+      <tr><td>WO discussion thread</td><td><code>get_work_order_comments</code>, <code>comment_on_work_order</code></td><td>Use human <code>wo_id</code> (e.g. <code>WO-001</code>)</td></tr>
+      <tr><td>Team clarification Q&amp;A</td><td><code>ask_question</code>, <code>get_clarifications</code></td><td>Visible in Forge UI for team answers</td></tr>
+      <tr><td>Load requirements before coding</td><td><code>get_artifact</code>, <code>search_artifacts</code></td><td>Types: intent, prd, brd, architecture, rtm</td></tr>
+      <tr><td>Sync git activity to Forge</td><td><code>sync_dev_activity</code></td><td>After push or PR; before <code>complete_work_order</code></td></tr>
+      <tr><td>Verify activity is complete</td><td><code>validate_dev_activity_sync</code></td><td>When commits/PRs may be missing in Forge</td></tr>
+      <tr><td>Recover missed events</td><td><code>replay_dev_activity</code></td><td>After validation finds gaps</td></tr>
+      <tr><td>Generate commit message</td><td><code>prepare_commit</code></td><td>Before <code>git commit</code>; produces <code>[WO-...]</code> message</td></tr>
+      <tr><td>Create linked PR</td><td><code>create_pull_request</code></td><td>Returns CLI command (e.g. <code>gh pr create</code>) — does not open PR itself</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Server discovery</h3>
+  <ul>
+    <li>Run <code>/forge-status</code> to find your active Forge MCP server</li>
+    <li>Common names: <code>user-forge</code>, <code>forge</code></li>
+    <li>Tools appear as <code>mcp__&lt;server&gt;__&lt;tool_name&gt;</code> in agent context</li>
+    <li>Endpoint: <code>https://app.softwareforge.ai/api/mcp</code></li>
+  </ul>
+
+  <h3>Session gates</h3>
+  <ol>
+    <li><code>configure_repo</code> — required once per session before work-order tools</li>
+    <li><code>set_project</code> — required before work-order and dev-activity operations</li>
+  </ol>
+
+  <h3>MCP resources (read-only)</h3>
+  <ul>
+    <li><code>forge://docs/introduction</code> — Forge overview</li>
+    <li><code>forge://docs/tools</code> — available MCP tools list</li>
+    <li><code>forge://project/{projectId}/intent|prd|brd|architecture</code> — latest artifacts</li>
+  </ul>
+
+  <h3>Project context (9 tools)</h3>
+  <table>
+    <thead><tr><th>Tool</th><th>Purpose</th><th>When to use</th><th>Key parameters</th></tr></thead>
+    <tbody>
+      <tr><td><code>set_project</code></td><td>Set active project for the MCP session</td><td>Start of session or when switching projects</td><td><code>project_id</code></td></tr>
+      <tr><td><code>list_my_projects</code></td><td>List all projects you can access</td><td>First connect, project picker, connection test (<code>/forge-status</code>)</td><td>—</td></tr>
+      <tr><td><code>list_linked_repos</code></td><td>Show repos linked to the current project</td><td>Before coding, committing, or creating PRs — only these repos are valid</td><td>—</td></tr>
+      <tr><td><code>link_repo</code></td><td>Link a new repository to the project</td><td>When a repo is not yet linked but needed for the work order</td><td><code>git_url</code> or <code>repo_full_name</code> + <code>connector_id</code></td></tr>
+      <tr><td><code>get_project_state</code></td><td>Return journey step, ref code, and metadata</td><td>Project briefing (<code>/forge-context</code>), understanding journey progress</td><td>—</td></tr>
+      <tr><td><code>configure_repo</code></td><td>Register session with Forge; unlock work-order tools</td><td>Once per session before any work-order or activity tool</td><td><code>ide: "cursor"</code>, <code>hooks_already_present: true</code></td></tr>
+      <tr><td><code>get_artifact</code></td><td>Fetch latest version of a journey document</td><td>Before implementation; RTM drift check; artifact lookup</td><td><code>type</code>: intent, prd, brd, architecture, work_orders, rtm</td></tr>
+      <tr><td><code>list_ux_references</code></td><td>List UX/design reference images with download URLs</td><td>When UI/design alignment is part of the work order</td><td>—</td></tr>
+      <tr><td><code>search_artifacts</code></td><td>Full-text search across all project artifacts</td><td>Keyword lookup when you know the topic but not the document type</td><td><code>query</code> (min 2 characters)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Work orders (15 tools)</h3>
+  <table>
+    <thead><tr><th>Tool</th><th>Purpose</th><th>When to use</th><th>Key parameters</th></tr></thead>
+    <tbody>
+      <tr><td><code>list_work_orders</code></td><td>List tasks in the active project</td><td>Browse backlog; filter by stage or priority (<code>/forge-orders</code>)</td><td><code>status</code>, <code>priority</code></td></tr>
+      <tr><td><code>get_work_order</code></td><td>Full task details including acceptance criteria and RTM traceability</td><td>Before implementing; validating scope; pre-commit checklist</td><td><code>work_order_id</code> (UUID)</td></tr>
+      <tr><td><code>get_next_work_order</code></td><td>Pick highest-priority backlog task and auto-transition</td><td>"What should I work on next?" (<code>/work</code>, <code>/start-work</code>)</td><td>—</td></tr>
+      <tr><td><code>update_work_order</code></td><td>Report post-commit dev activity and optional field updates</td><td>After every meaningful commit — before PR, not at completion only</td><td><code>work_order_id</code>, <code>commit_summary</code>, <code>rtm_drift_summary</code>, git stats</td></tr>
+      <tr><td><code>transition_work_order</code></td><td>Manually move a task to the next workflow stage</td><td>When auto-transition is not appropriate; call <code>get_workflow_stages</code> first</td><td><code>work_order_id</code>, <code>status</code>, <code>notes</code></td></tr>
+      <tr><td><code>complete_work_order</code></td><td>Mark a task as done in Forge</td><td>After PR is merged and <code>sync_dev_activity</code> has run</td><td><code>work_order_id</code>; or <code>user_confirmed_complete_without_merged_pr</code></td></tr>
+      <tr><td><code>get_workflow_stages</code></td><td>Return canonical stage names, order, and allowed transitions</td><td>Before filtering <code>list_work_orders</code> or calling <code>transition_work_order</code></td><td>—</td></tr>
+      <tr><td><code>get_work_order_stats</code></td><td>Summarize task counts by status</td><td>Backlog overview; connection test; dashboard-style briefing</td><td>—</td></tr>
+      <tr><td><code>prepare_commit</code></td><td>Generate a scoped <code>[WO-...]</code> commit message</td><td>Immediately before <code>git commit</code> — validates scope alignment</td><td><code>work_order_id</code></td></tr>
+      <tr><td><code>create_pull_request</code></td><td>Generate PR title, body, and host CLI command</td><td>After push; records activity in Forge; run returned <code>gh pr create</code> command</td><td><code>work_order_id</code>, <code>branch_name</code>, <code>changes_summary</code></td></tr>
+      <tr><td><code>ask_question</code></td><td>Post a clarification for the team in Forge UI</td><td>When you need an answer from PM/architect, not a WO thread comment</td><td><code>question</code>; optional <code>work_order_id</code> or <code>artifact_id</code></td></tr>
+      <tr><td><code>get_clarifications</code></td><td>List clarification Q&amp;A for the project</td><td>Review prior team answers; follow up on <code>ask_question</code></td><td><code>task_id</code> or <code>artifact_id</code></td></tr>
+      <tr><td><code>comment_on_work_order</code></td><td>Post on the work order discussion thread</td><td>WO-specific discussion; optional AI reply via <code>trigger_ai</code></td><td><code>wo_id</code> (e.g. WO-001), <code>content</code></td></tr>
+      <tr><td><code>reply_to_work_order_comment</code></td><td>Reply to an existing WO comment</td><td>Threaded follow-up without triggering AI</td><td><code>wo_id</code>, <code>comment_id</code>, <code>content</code></td></tr>
+      <tr><td><code>get_work_order_comments</code></td><td>List all comments on a work order</td><td>Before posting; reviewing discussion history</td><td><code>wo_id</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Developer activity (3 tools)</h3>
+  <table>
+    <thead><tr><th>Tool</th><th>Purpose</th><th>When to use</th><th>Key parameters</th></tr></thead>
+    <tbody>
+      <tr><td><code>sync_dev_activity</code></td><td>Pull commits and PRs from linked repos into Forge</td><td>After <code>git push</code> or PR creation; before <code>complete_work_order</code>; session end reminder</td><td><code>repo_name</code>, <code>mode</code>, <code>from_timestamp</code>, <code>dry_run</code></td></tr>
+      <tr><td><code>validate_dev_activity_sync</code></td><td>Check that Forge activity data matches git history</td><td>When completion is blocked; suspected missing commits or PRs</td><td><code>repo_name</code>, <code>since</code>, <code>forge_only</code></td></tr>
+      <tr><td><code>replay_dev_activity</code></td><td>Re-process missed activity events</td><td>After validation finds gaps; recovery from sync failures</td><td><code>repo_name</code>, <code>mode</code>, <code>from_timestamp</code>, <code>max_rows</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Note:</strong> Backend <code>shipping_*</code> tools are not included in this plugin. This plugin exposes 26 MCP tools total.</div>
+</section>
+
+<!-- 8. SUPPORT -->
+<section id="support">
+  <h2>9. Support &amp; Links</h2>
+  <table>
+    <thead><tr><th>Resource</th><th>URL</th></tr></thead>
+    <tbody>
+      <tr><td>Forge application</td><td><a href="https://app.softwareforge.ai">app.softwareforge.ai</a></td></tr>
+      <tr><td>Plugin repository</td><td><a href="https://github.com/securefactory/forge-cursor-plugin">github.com/securefactory/forge-cursor-plugin</a></td></tr>
+      <tr><td>Team admin setup</td><td><a href="https://github.com/securefactory/forge-cursor-plugin/blob/main/docs/team-marketplace-setup.md">Team Marketplace Setup Guide</a></td></tr>
+      <tr><td>Automation templates</td><td><a href="https://github.com/securefactory/forge-cursor-plugin/blob/main/docs/automation-templates.md">Cursor Cloud Agent Templates</a></td></tr>
+      <tr><td>Cursor marketplace</td><td><a href="https://cursor.com/marketplace">cursor.com/marketplace</a></td></tr>
+      <tr><td>Email</td><td><a href="mailto:hi@softwareforge.ai">hi@softwareforge.ai</a></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  <p>Forge Cursor Plugin v1.1.0 &middot; Apache-2.0</p>
+  <p><a href="https://app.softwareforge.ai">SoftwareForge</a> &middot; <a href="https://github.com/securefactory/forge-cursor-plugin">Source</a></p>
+</footer>
+
+</div>
+</body>
+</html>

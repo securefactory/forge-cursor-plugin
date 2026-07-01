@@ -10,8 +10,16 @@ Work order management, developer activity tracking, and project context for AI-a
 | **Dev Activity** | Sync commits and PRs from linked repos, validate consistency, replay gaps |
 | **Project Context** | Set active project, list repos, search artifacts, access requirements |
 | **Pre-commit Guard** | Enforces Forge pre-commit checklist for `[WO-]` / `[TASK-]` commits (tests, acceptance criteria, activity report) |
-| **Dangerous Ops Guard** | Blocks force-pushes, destructive commands, and unreviewed prod deployments |
-| **Session Tracking** | Reminds to sync activity when agent session ends |
+| **Destructive Command Guard** | Blocks force-pushes and `rm -rf /`; prompts before prod `kubectl apply` |
+| **Pre-push Reminder** | Reminds to sync activity and link PRs (non-blocking) |
+| **Sensitive File Warning** | Warns when reading files with sensitive names (`.env`, `*.pem`, etc.) — filename only, not content scan |
+| **Session End Reminder** | Reminds to sync activity when agent session ends |
+
+## Documentation
+
+Full usage and feature guide (customer-facing): **[docs/forge-plugin-guide.html](docs/forge-plugin-guide.html)**
+
+Open in a browser or share with your team. For enterprise admin setup, see [docs/team-marketplace-setup.md](docs/team-marketplace-setup.md).
 
 ## Install
 
@@ -155,15 +163,15 @@ All tools live on your **connected Forge MCP server** (discovered via `/forge-st
 - `forge://docs/introduction`, `forge://docs/tools`
 - `forge://project/{projectId}/intent|prd|brd|architecture`
 
-## Guard Hooks
+## Safety Hooks
 
 | Hook | Event | Behavior |
 |------|-------|----------|
 | Pre-commit | `git commit` | Blocks `[WO-]` / `[TASK-]` commits until Forge pre-commit checklist is complete |
-| Pre-push | `git push` | Advisory reminder to sync activity and link PRs |
-| Block dangerous ops | `git push --force`, `rm -rf /`, prod deploys | Blocks with explanation |
-| Redact secrets | File reads | Warns when reading files that may contain secrets |
-| Session complete | Agent stops | One-time reminder to `sync_dev_activity` (no infinite loop) |
+| Pre-push | `git push` | Reminder to sync activity and link PRs (non-blocking) |
+| Destructive command guard | `git push --force`, `rm -rf /`, prod `kubectl apply` | Blocks force-push and `rm -rf /`; asks for approval on prod kubectl |
+| Sensitive file warning | File reads | Warns on sensitive filenames (`.env`, `*.pem`, etc.) — does not scan content |
+| Session end reminder | Agent stops | One-time reminder to `sync_dev_activity` (no infinite loop) |
 
 ## Repository structure
 
